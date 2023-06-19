@@ -1,0 +1,17 @@
+.sidebar {
+  &:hover {
+    width: 260px;
+  }
+  transition: 0.3s;
+  width: 60px;
+  overflow: hidden;
+
+  .nav-link {
+    margin: 0 !important;
+  }
+}
+.sidebarIcon {
+  margin-right: 15px;
+  width: 30px;
+  height: 30px;
+}
