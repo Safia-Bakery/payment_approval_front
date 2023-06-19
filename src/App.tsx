@@ -7,6 +7,7 @@ import CreateOrder from "./pages/CreateOrder";
 import SideBar from "./components/SideBar";
 import ActiveOrders from "./pages/ActiveOrders";
 import HistoryOrders from "./pages/HistoryOrders";
+import "react-datepicker/dist/react-datepicker.css";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
