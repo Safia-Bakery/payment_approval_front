@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { numberWithCommas } from "src/utils/helpers";
+import { numberWithCommas } from "utils/helpers";
 
 interface Props {
   column: string[];

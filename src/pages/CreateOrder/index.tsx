@@ -1,16 +1,27 @@
-import Container from "src/components/Container";
-import InputBlock from "src/components/Input";
-import "./index.scss";
-import { ChangeEvent, useState } from "react";
+import Container from "components/Container";
+import InputBlock from "components/Input";
+import styles from "./index.module.scss";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
+import createOrderMutation from "hooks/mutation/createOrderMutation";
+import useCategories from "hooks/useCategories";
 
-const depArr = ["Fabrika", "Roznitsa"];
 const paymentType = ["перечисления", "наличные", "перевод на карту"];
 
 const CreateOrder = () => {
+  const { data: categories } = useCategories({ enabled: false });
   const [image, $image] = useState<string | ArrayBuffer | null>();
   const [reserve_time, $reserve_time] = useState(new Date());
+  const [department, $department] = useState<number>();
+  const { mutate } = createOrderMutation();
+
+  console.log(image, "image");
+
+  useEffect(() => {
+    if (categories?.length) $department(categories[0].id);
+  }, [categories]);
+
   const {
     register,
     handleSubmit,
@@ -28,44 +39,58 @@ const CreateOrder = () => {
     reader.readAsDataURL(e.target.files?.[0] as Blob);
   };
 
-  const onSubmit = () => {
-    const { user_name, product_name } = getValues();
+  const handleDept = (val: number) => () => $department(val);
 
-    console.log({ user_name, product_name });
+  const onSubmit = () => {
+    const {
+      user_name,
+      product_name,
+      delivery_time,
+      price,
+      payer,
+      provider,
+      urgent,
+      description,
+      payment_type,
+    } = getValues();
+
+    mutate({
+      category_id: 0,
+      purchaser: user_name,
+      product: product_name,
+      seller: provider,
+      delivery_time,
+      price,
+      payer,
+      urgent,
+      description,
+      payment_type,
+      // image: image?.toString(),
+    });
   };
+
   return (
     <Container>
-      <h1>Create Order</h1>
-      <div className="content">
+      <h1>Создать заказ</h1>
+      <div className="d-flex flex-column">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-            <div className="col-md-2">
+            <div className="col-md-4">
               <div className="form-group">
-                <label>Select department</label>
-                <div className="d-flex justify-content-between align-items-center">
-                  {depArr.map(dep => (
-                    <div key={dep}>
-                      <label>{dep}</label>
-                      <input className="ml-2" type="radio" />
+                <label>Выберите отдел</label>
+                <div className="d-flex justify-content-between align-items-center gap-10">
+                  {categories?.map(({ id, name }) => (
+                    <div key={id} className={styles.deptItem} onClick={handleDept(id)}>
+                      <label>{name}</label>
+                      <input
+                        onChange={handleDept(id)}
+                        checked={department === id}
+                        className="ml-2"
+                        type="radio"
+                      />
                     </div>
                   ))}
                 </div>
-                {/* <select
-                  {...register("department", { required: "required" })}
-                  defaultValue={"Select Item"}
-                  className="form-select"
-                  aria-label="Default select example">
-                  {depArr.map(dep => (
-                    <option key={dep} value={dep}>
-                      {dep}
-                    </option>
-                  ))}
-                </select> */}
-                {/* {errors.department && (
-                  <div className="alert alert-danger p-2" role="alert">
-                    {errors.department.message?.toString()}
-                  </div>
-                )} */}
               </div>
             </div>
           </div>
@@ -73,10 +98,10 @@ const CreateOrder = () => {
             <div className="col-md-3">
               <div className="form-group">
                 <InputBlock
-                  register={register("user_name", { required: "required" })}
+                  register={register("user_name", { required: "Обязательное поле" })}
                   className="form-control"
-                  placeholder="Username"
-                  label="Username"
+                  placeholder="Укажите заказщика"
+                  label="Укажите заказщика"
                   error={errors.user_name}
                 />
               </div>
@@ -84,10 +109,10 @@ const CreateOrder = () => {
             <div className="col-md-4">
               <div className="form-group">
                 <InputBlock
-                  register={register("product_name", { required: "required" })}
+                  register={register("product_name", { required: "Обязательное поле" })}
                   className="form-control"
-                  placeholder="item name"
-                  label="Item Name"
+                  placeholder="Названия товара"
+                  label="Названия товара"
                   error={errors.product_name}
                 />
               </div>
@@ -95,23 +120,23 @@ const CreateOrder = () => {
             <div className="col-md-5">
               <div className="form-group">
                 <InputBlock
-                  register={register("price", { required: "required" })}
+                  register={register("price", { required: "Обязательное поле" })}
                   className="form-control"
                   inputType="number"
-                  placeholder="Price"
-                  label="Price"
+                  placeholder="Цена"
+                  label="Цена"
                   error={errors.price}
                 />
               </div>
             </div>
           </div>
-          {/* =================== */}
+
           <div className="row">
             <div className="col-md-3">
               <div className="form-group">
-                <label>payment_type</label>
+                <label>Выберите тип оплаты</label>
                 <select
-                  {...register("payment_type", { required: "required" })}
+                  // {...register("payment_type", { required: "Обязательное поле" })}
                   defaultValue={"Select Item"}
                   className="form-select"
                   aria-label="Default select example">
@@ -131,10 +156,10 @@ const CreateOrder = () => {
             <div className="col-md-4">
               <div className="form-group">
                 <InputBlock
-                  register={register("payer", { required: "required" })}
+                  register={register("payer", { required: "Обязательное поле" })}
                   className="form-control"
-                  placeholder="payer"
-                  label="Payer Name"
+                  placeholder="Платильщик"
+                  label="Платильщик"
                   error={errors.payer}
                 />
               </div>
@@ -142,10 +167,10 @@ const CreateOrder = () => {
             <div className="col-md-5">
               <div className="form-group">
                 <InputBlock
-                  register={register("provider", { required: "required" })}
+                  register={register("provider", { required: "Обязательное поле" })}
                   className="form-control"
-                  placeholder="provider"
-                  label="provider"
+                  placeholder="Поставщик"
+                  label="Поставщик"
                   error={errors.provider}
                 />
               </div>
@@ -155,40 +180,40 @@ const CreateOrder = () => {
           <div className="row">
             <div className="col-md-6">
               <div className="form-group">
-                <label>Comments</label>
+                <label>Комментарии</label>
                 <textarea
                   rows={4}
-                  {...register("comment")}
-                  className="form-control textArea"
+                  {...register("description")}
+                  className={`form-control ${styles.textArea}`}
                   name="comment"
-                  placeholder="Here can be your description"
+                  placeholder="Комментарии"
                 />
               </div>
             </div>
             <div className="col-md-6">
               <div className="form-group d-flex flex-column">
-                <label>Time</label>
+                <label>Срок</label>
                 <DatePicker
+                  // {...register("delivery_time", { required: "Обязательное поле" })}
                   selected={reserve_time}
                   onChange={(date: Date) => reserveTime(date)}
                   timeInputLabel="Time:"
                   dateFormat="MM/dd/yyyy h:mm"
-                  className={"datePicker form-control"}
+                  className={`${styles.datePicker} form-control`}
                   showTimeInput
                 />
-                <div className="">
-                  <label>urgent</label>
-                  <input className="ml-2" type="checkbox" name="urgent" />
+                <div className={styles.urgent}>
+                  <label>Срочно</label>
+                  <input {...register("urgent")} className="ml-2" type="checkbox" name="urgent" />
                 </div>
               </div>
             </div>
           </div>
 
           <div className="row mb-4">
-            <div className="col-md-12 uploadImage">
-              <label>Upload Image</label>
+            <div className={`col-md-12 ${styles.uploadImage}`}>
+              <label>Добавить фото</label>
               <input
-                {...register("image", { required: "required" })}
                 className="form-control"
                 type="file"
                 onChange={handleImage}
@@ -203,8 +228,8 @@ const CreateOrder = () => {
             </div>
           </div>
 
-          <button type="submit" className="btn btn-info btn-fill pull-right">
-            Submit
+          <button type="submit" className={`btn btn-info btn-fill pull-right ${styles.btn}`}>
+            Создать
           </button>
         </form>
       </div>

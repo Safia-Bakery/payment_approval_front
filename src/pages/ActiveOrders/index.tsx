@@ -1,12 +1,12 @@
-import Container from "src/components/Container";
-import { numberWithCommas } from "src/utils/helpers";
+import Container from "components/Container";
+import { numberWithCommas } from "utils/helpers";
 
-const column = ["#", "name", "department", "Item Name", "price", "status", "action"];
+const column = ["#", "заказщик", "отдел", "Названия товара", "Цена", "статус", "дествия"];
 
 const ActiveOrders = () => {
   return (
     <Container>
-      <h1>Active Orders</h1>
+      <h1>Активные заказы</h1>
       <div className="content table-responsive table-full-width">
         <table className="table table-hover table-striped">
           <thead>
@@ -26,10 +26,10 @@ const ActiveOrders = () => {
               <td>accepted</td>
               <td className="d-flex gap-2">
                 <button type="button" className="btn btn-success">
-                  Accept
+                  Принять
                 </button>
                 <button type="button" className="btn btn-danger">
-                  Deny
+                  Отклонить
                 </button>
               </td>
             </tr>
@@ -42,10 +42,10 @@ const ActiveOrders = () => {
               <td>accepted</td>
               <td className="d-flex gap-2">
                 <button type="button" className="btn btn-success">
-                  Accept
+                  Принять
                 </button>
                 <button type="button" className="btn btn-danger">
-                  Deny
+                  Отклонить
                 </button>
               </td>
             </tr>

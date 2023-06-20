@@ -7,7 +7,7 @@ import reducer from "./reducers/reducers";
 const persistConfig = {
   key: "basket",
   storage,
-  whitelist: ["basket", "auth", "filter", "langReducer", "favourite", "location"],
+  whitelist: ["auth"],
 };
 
 export const store = configureStore({

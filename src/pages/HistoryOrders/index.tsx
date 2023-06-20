@@ -1,12 +1,12 @@
-import Container from "src/components/Container";
-import { numberWithCommas } from "src/utils/helpers";
+import Container from "components/Container";
+import { numberWithCommas } from "utils/helpers";
 
-const column = ["#", "name", "department", "Item Name", "price", "status"];
+const column = ["#", "заказщик", "отдел", "Названия товара", "Цена", "статус"];
 
 const HistoryOrders = () => {
   return (
     <Container>
-      <h1>History Orders</h1>
+      <h1>История Заказов</h1>
       <div className="content table-responsive table-full-width">
         <table className="table table-hover table-striped">
           <thead>

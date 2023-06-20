@@ -6,3 +6,22 @@ export enum EPresetTimes {
   WEEK = DAY * 7,
   TEN_DAYS = DAY * 10,
 }
+
+export interface CategoryTypes {
+  id: number;
+  name: string;
+}
+
+export interface CreateOrderType {
+  category_id: number;
+  purchaser: string;
+  product: string;
+  seller: string;
+  delivery_time: string;
+  price: number;
+  payer: string;
+  urgent: boolean;
+  description: string;
+  image?: string;
+  payment_type: string;
+}

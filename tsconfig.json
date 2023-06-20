@@ -11,12 +11,10 @@
     "noFallthroughCasesInSwitch": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "src/*": ["./src/*"],
-      "pages/*": ["./src/pages/*"],
-      "assets/*": ["./src/assets/*"],
-      "components/*": ["./src/components/*"]
+      "pages/*": ["./pages/*"],
+      "components/*": ["./components/*"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

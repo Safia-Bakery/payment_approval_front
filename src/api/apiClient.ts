@@ -1,12 +1,12 @@
 import axios, { CancelToken } from "axios";
-import { logoutHandler } from "src/redux/reducers/authReducer";
-import { store } from "src/redux/rootConfig";
+import { logoutHandler } from "redux/reducers/authReducer";
+import { store } from "redux/rootConfig";
 
-const BASE_URL = "https://staging.lume.uz/";
+const BASE_URL = "http://10.0.1.30:8000";
 
 export const HttpConfig = {
   BASE_URL,
-  API_PATH: BASE_URL + "api",
+  API_PATH: BASE_URL,
 };
 export default class HttpClient {
   async doRequest(cancelToken?: CancelToken) {

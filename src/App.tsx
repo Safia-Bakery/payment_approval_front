@@ -1,13 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "./App.css";
 import { EPresetTimes } from "./utils/types";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
-import CreateOrder from "./pages/CreateOrder";
-import SideBar from "./components/SideBar";
-import ActiveOrders from "./pages/ActiveOrders";
-import HistoryOrders from "./pages/HistoryOrders";
+import { BrowserRouter } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
+import { useAppSelector } from "./redux/utils/types";
+import { tokenSelector } from "./redux/reducers/authReducer";
+import { useLayoutEffect } from "react";
+import axios from "axios";
+import Routes from "components/Routes";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,16 +19,16 @@ export const queryClient = new QueryClient({
 });
 
 const App = () => {
+  const token = useAppSelector(tokenSelector);
+
+  useLayoutEffect(() => {
+    if (token) axios.defaults.headers["Authorization"] = `Bearer ${token}`;
+  }, [token]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        {true && <SideBar />}
-        <Routes>
-          <Route element={<CreateOrder />} path="/" />
-          <Route element={<Login />} path="/login" />
-          <Route element={<ActiveOrders />} path="/active-orders" />
-          <Route element={<HistoryOrders />} path="/history-orders" />
-        </Routes>
+        <Routes />
       </BrowserRouter>
     </QueryClientProvider>
   );
