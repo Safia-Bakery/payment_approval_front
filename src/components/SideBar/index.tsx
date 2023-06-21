@@ -1,36 +1,58 @@
 import { useState } from "react";
 import "./index.scss";
-import { useAppDispatch } from "redux/utils/types";
-import { logoutHandler } from "redux/reducers/authReducer";
+import { useAppDispatch, useAppSelector } from "redux/utils/types";
+import { logoutHandler, roleSelector } from "redux/reducers/authReducer";
+import { Roles } from "utils/types";
 
-// const orderArr = [
-//   {
-//     name: "createOrder",
-//     url: "createOrder",
-//   },
-// ];
-
-const superUserArr = [
+const purchasing = [
   {
-    name: "make order",
+    name: "createOrder",
     url: "/",
     icon: "/assets/icons/order.svg",
   },
   {
-    name: "Active Orders",
-    url: "active-orders",
+    name: "Активные Заказы",
+    url: "/active-orders",
     icon: "/assets/icons/activeOrder.svg",
   },
   {
-    name: "History Orders",
-    url: "history-orders",
+    name: "История Заказов",
+    url: "/history-orders",
     icon: "/assets/icons/historyOrder.svg",
+  },
+];
+
+const superAdmins = [
+  {
+    name: "Создать Заказ",
+    url: "/",
+    icon: "/assets/icons/order.svg",
+  },
+  {
+    name: "Активные Заказы",
+    url: "/active-orders",
+    icon: "/assets/icons/activeOrder.svg",
+  },
+  {
+    name: "История Заказов",
+    url: "/history-orders",
+    icon: "/assets/icons/historyOrder.svg",
+  },
+  {
+    name: "Пользователи",
+    url: "/users",
+    icon: "/assets/icons/user.svg",
   },
 ];
 
 const SideBar = () => {
   const dispatch = useAppDispatch();
   const [active, $active] = useState(false);
+  const role = useAppSelector(roleSelector);
+
+  console.log(role, "role sidebar");
+
+  // useEffect(() => )
 
   const handleLogout = () => dispatch(logoutHandler());
 
@@ -49,14 +71,14 @@ const SideBar = () => {
           <div
             onClick={handleLogout}
             className="d-flex text-center justify-content-end px-3 pt-3 font-weight-bold pointer">
-            logout
+            Выйти
             <div className="logout ml-2">
               <img src="/assets/icons/logout.svg" alt="logout" />
             </div>
           </div>
 
           <ul className="nav mt-2">
-            {superUserArr.map(item => (
+            {[...(role === Roles.purchasing ? purchasing : superAdmins)].map(item => (
               <li key={item.url}>
                 <a className="nav-link" href={item.url}>
                   <img src={item.icon} alt={item.name} className="sidebarIcon" />

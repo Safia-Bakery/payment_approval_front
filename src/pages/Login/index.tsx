@@ -8,11 +8,14 @@ import axios from "axios";
 import { loginHandler, tokenSelector } from "redux/reducers/authReducer";
 import { useNavigate } from "react-router-dom";
 import { useLayoutEffect } from "react";
+import useToken from "hooks/useToken";
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const token = useAppSelector(tokenSelector);
+  const { refetch } = useToken({});
+
   const {
     register,
     handleSubmit,
@@ -35,6 +38,7 @@ const Login = () => {
           const token = data.access_token;
           axios.defaults.headers["Authorization"] = `Bearer ${token}`;
           dispatch(loginHandler(data.access_token));
+          refetch();
           navigate("/");
         },
       },
