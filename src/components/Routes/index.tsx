@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Route, Routes, useNavigate } from "react-router-dom";
 import SideBar from "../SideBar";
 import { useAppDispatch, useAppSelector } from "redux/utils/types";
@@ -26,13 +25,13 @@ const Navigation = () => {
     if (!token) navigate("/login");
     if (isError || error) dispatch(logoutHandler());
     if (me?.role) dispatch(roleHandler(me.role));
-  }, [token, isError, me?.role, error]);
+  }, [token, isError, me?.role, error, navigate, dispatch]);
 
   useCategories({ enabled: !!token });
   useUserRoles({ enabled: !!token });
 
   const renderRoutes = useMemo(() => {
-    if (me?.role === Roles.purchasing) {
+    if (me?.role === Roles.purchasing || me?.role === Roles.accountant || me?.role === Roles.fin) {
       return (
         <>
           <Route element={<CreateOrder />} path="/" />

@@ -6,7 +6,9 @@ import { useAppSelector } from "./redux/utils/types";
 import { tokenSelector } from "./redux/reducers/authReducer";
 import { useLayoutEffect } from "react";
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
 import Routes from "components/Routes";
+import { ToastContainer } from "react-toastify";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,6 +32,7 @@ const App = () => {
       <BrowserRouter>
         <Routes />
       </BrowserRouter>
+      <ToastContainer />
     </QueryClientProvider>
   );
 };

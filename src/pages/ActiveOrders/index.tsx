@@ -7,17 +7,27 @@ import { useAppSelector } from "redux/utils/types";
 import { roleSelector } from "redux/reducers/authReducer";
 import { Roles, Status } from "utils/types";
 import orderStatusMutation from "hooks/mutation/orderStatusMutation";
+import { errorToast, successToast } from "utils/toast";
+import Loading from "components/Loader";
 
 const ActiveOrders = () => {
   const navigate = useNavigate();
-  const { data: orders, refetch } = useOrders({});
+  const { data: orders, refetch, isLoading } = useOrders({});
   const createOrder = () => navigate("/");
   const role = useAppSelector(roleSelector);
   const { mutate } = orderStatusMutation();
 
   const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
   const handleStatus = (body: { order_id: number; status: Status }) => () => {
-    mutate(body, { onSuccess: () => refetch() });
+    mutate(body, {
+      onSuccess: () => {
+        refetch();
+        body.status === Status.accepted
+          ? successToast("успешно принито")
+          : successToast("успешно отклонено");
+      },
+      onError: (error: any) => errorToast(error.toString()),
+    });
   };
 
   const column = [
@@ -29,6 +39,8 @@ const ActiveOrders = () => {
     "статус",
     role !== Roles.purchasing ? "дествия" : "",
   ];
+
+  if (isLoading) return <Loading />;
 
   return (
     <Container>
@@ -47,13 +59,14 @@ const ActiveOrders = () => {
               </th>
             ))}
           </thead>
-          <tbody>
-            {orders?.length ? (
-              orders?.map(order => (
+
+          {orders?.length && (
+            <tbody>
+              {orders?.map(order => (
                 <tr key={order.id}>
                   <td>{order.id}</td>
                   <td>{order.purchaser}</td>
-                  <td>{order.category_id}</td>
+                  <td>{order?.category}</td>
                   <td>{order.product}</td>
                   <td>{numberWithCommas(order.price)}</td>
                   <td>{order.status}</td>
@@ -88,12 +101,15 @@ const ActiveOrders = () => {
                     <td />
                   )}
                 </tr>
-              ))
-            ) : (
-              <h2>list empty</h2>
-            )}
-          </tbody>
+              ))}
+            </tbody>
+          )}
         </table>
+        {!orders?.length && (
+          <div className="w-100">
+            <h2 className="text-center w-100 ">Спосок пуст</h2>
+          </div>
+        )}
       </div>
     </Container>
   );

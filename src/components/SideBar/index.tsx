@@ -78,7 +78,11 @@ const SideBar = () => {
           </div>
 
           <ul className="nav mt-2">
-            {[...(role === Roles.purchasing ? purchasing : superAdmins)].map(item => (
+            {[
+              ...(role === Roles.purchasing || role === Roles.accountant || role === Roles.fin
+                ? purchasing
+                : superAdmins),
+            ].map(item => (
               <li key={item.url}>
                 <a className="nav-link" href={item.url}>
                   <img src={item.icon} alt={item.name} className="sidebarIcon" />

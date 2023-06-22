@@ -9,6 +9,9 @@ import { loginHandler, tokenSelector } from "redux/reducers/authReducer";
 import { useNavigate } from "react-router-dom";
 import { useLayoutEffect } from "react";
 import useToken from "hooks/useToken";
+import { errorToast, successToast } from "utils/toast";
+import InputMask from "react-input-mask";
+import { fixedString } from "utils/helpers";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -31,8 +34,9 @@ const Login = () => {
 
   const onSubmit = () => {
     const { username, password } = getValues();
+
     mutate(
-      { username, password },
+      { username: "998" + fixedString(username), password },
       {
         onSuccess: ({ data }) => {
           const token = data.access_token;
@@ -40,7 +44,9 @@ const Login = () => {
           dispatch(loginHandler(data.access_token));
           refetch();
           navigate("/");
+          successToast("Добро пожаловать");
         },
+        onError: (error: any) => errorToast(error.toString()),
       },
     );
   };
@@ -49,14 +55,16 @@ const Login = () => {
       <div className={cl(styles.content, "p-4 shadow bg-white rounded")}>
         <h1 className="text-center mb-3">Войти</h1>
         <form className={styles.loginForm} onSubmit={handleSubmit(onSubmit)}>
-          <InputBlock
-            register={register("username", { required: "required" })}
-            className="form-control"
-            inputType="text"
-            placeholder="Логин"
-            label="Логин"
-            error={errors.username}
-          />
+          <div>
+            <label>Логин</label>
+            <InputMask
+              className="form-control"
+              mask="(99) 999-99-99"
+              autoFocus
+              {...register("username", { required: "required" })}
+              alwaysShowMask
+            />
+          </div>
           <InputBlock
             register={register("password", { required: "required" })}
             className="form-control"

@@ -40,7 +40,7 @@ export interface OrderType {
   image_id: null | string | number;
   payment_type: string;
   image?: string;
-  category?: string;
+  category: string;
 }
 export interface CreateOrderType {
   category_id: number;
@@ -52,7 +52,7 @@ export interface CreateOrderType {
   payer: string;
   urgent: boolean;
   description: string;
-  image?: string;
+  image_id?: string;
   payment_type: string;
 }
 

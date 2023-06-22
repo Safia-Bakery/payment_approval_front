@@ -1,16 +1,20 @@
+import { BASE_URL } from "api/apiClient";
 import Container from "components/Container";
+import Loading from "components/Loader";
 import dayjs from "dayjs";
 import { useOrder } from "hooks/userOrder";
+import styles from "./index.module.scss";
 import { useParams } from "react-router-dom";
 
 const ShowOrder = () => {
   const { id } = useParams();
-  const { data: order } = useOrder({ id: Number(id) });
+  const { data: order, isLoading } = useOrder({ id: Number(id) });
 
+  if (isLoading) return <Loading />;
   return (
     <Container>
       <h1>Заказ #{id}</h1>
-      <table className="table table-striped table-bordered detail-view">
+      <table className={`table table-striped table-bordered detail-view ${styles.orderTable}`}>
         <tbody>
           <tr>
             <th>отдел</th>
@@ -54,9 +58,9 @@ const ShowOrder = () => {
       </table>
       {order?.image && (
         <div className="d-flex flex-column">
-          <h2>Images</h2>
+          <h2>Картинки</h2>
           <div className="">
-            <img src={order.image} alt="product-img" />
+            <img src={`${BASE_URL}/${order.image}`} alt="product-img" />
           </div>
         </div>
       )}

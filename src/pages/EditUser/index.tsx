@@ -7,6 +7,7 @@ import { FormEvent, useState } from "react";
 import updateUser from "hooks/mutation/updateUserMutation";
 import useUsers from "hooks/useUsers";
 import Loading from "components/Loader";
+import { errorToast, successToast } from "utils/toast";
 
 const EditUser = () => {
   const { data: roles } = useUserRoles({});
@@ -26,7 +27,9 @@ const EditUser = () => {
           onSuccess: () => {
             refetch();
             navigate("/users");
+            successToast("Изменено успешно");
           },
+          onError: (error: any) => errorToast(error.toString()),
         },
       );
     }

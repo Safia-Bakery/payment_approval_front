@@ -6,14 +6,17 @@ import useOrders from "hooks/useOrders";
 import { useAppSelector } from "redux/utils/types";
 import { roleSelector } from "redux/reducers/authReducer";
 import { Roles } from "utils/types";
+import Loading from "components/Loader";
 
 const column = ["#", "заказщик", "отдел", "Названия товара", "Цена", "статус"];
 
 const HistoryOrders = () => {
   const navigate = useNavigate();
-  const { data: orders } = useOrders({});
+  const { data: orders, isLoading } = useOrders({ history: true });
   const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
   const role = useAppSelector(roleSelector);
+
+  if (isLoading) return <Loading />;
   return (
     <Container>
       <h1>История Заказов</h1>
@@ -26,13 +29,13 @@ const HistoryOrders = () => {
               </th>
             ))}
           </thead>
-          <tbody>
-            {orders?.length ? (
-              orders?.map(order => (
+          {orders?.length && (
+            <tbody>
+              {orders?.map(order => (
                 <tr key={order.id}>
                   <td>{order.id}</td>
                   <td>{order.purchaser}</td>
-                  <td>{order.category_id}</td>
+                  <td>{order.category}</td>
                   <td>{order.product}</td>
                   <td>{numberWithCommas(order.price)}</td>
                   <td>{order.status}</td>
@@ -44,12 +47,15 @@ const HistoryOrders = () => {
                     </td>
                   )}
                 </tr>
-              ))
-            ) : (
-              <h2>list empty</h2>
-            )}
-          </tbody>
+              ))}
+            </tbody>
+          )}
         </table>
+        {!orders?.length && (
+          <div className="w-100">
+            <h2 className="text-center w-100 ">Спосок пуст</h2>
+          </div>
+        )}
       </div>
     </Container>
   );

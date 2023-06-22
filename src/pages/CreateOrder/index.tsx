@@ -8,6 +8,7 @@ import createOrderMutation from "hooks/mutation/createOrderMutation";
 import useCategories from "hooks/useCategories";
 import axios from "axios";
 import Loading from "components/Loader";
+import { errorToast, successToast } from "utils/toast";
 
 const paymentType = ["перечисления", "наличные", "перевод на карту"];
 
@@ -47,7 +48,7 @@ const CreateOrder = () => {
 
   const handleDept = (val: number) => () => $department(val);
   const handlePayment = (e: ChangeEvent<HTMLSelectElement>) => $payment_type(e.target.value);
-
+  console.log(imageId, "imageId");
   const onSubmit = () => {
     const { user_name, product_name, price, payer, provider, urgent, description } = getValues();
 
@@ -63,9 +64,15 @@ const CreateOrder = () => {
         urgent,
         description,
         payment_type,
-        image: imageId,
+        image_id: imageId,
       },
-      { onSuccess: () => reset() },
+      {
+        onSuccess: () => {
+          reset();
+          successToast("Заказ успешно создано");
+        },
+        onError: (error: any) => errorToast(error.toString()),
+      },
     );
   };
 
