@@ -22,6 +22,8 @@ export interface UsersTypes {
   time_created: string;
   id: number;
   role: Roles;
+  full_name: string;
+  telegram_id: number;
 }
 
 export interface OrderType {

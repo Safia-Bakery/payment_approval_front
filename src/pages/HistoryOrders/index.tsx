@@ -1,61 +1,99 @@
 import Container from "components/Container";
-import { numberWithCommas } from "utils/helpers";
 import styles from "./index.module.scss";
 import { useNavigate } from "react-router-dom";
 import useOrders from "hooks/useOrders";
-import { useAppSelector } from "redux/utils/types";
-import { roleSelector } from "redux/reducers/authReducer";
-import { Roles } from "utils/types";
+import { OrderType } from "utils/types";
 import Loading from "components/Loader";
 
-const column = ["#", "заказщик", "отдел", "Названия товара", "Цена", "статус"];
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  type MRT_SortingState,
+  type MRT_Virtualizer,
+} from "material-react-table";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const HistoryOrders = () => {
   const navigate = useNavigate();
-  const { data: orders, isLoading } = useOrders({ history: true });
+  const { data: orders, isLoading: orderLoading } = useOrders({ history: true });
   const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
-  const role = useAppSelector(roleSelector);
 
-  if (isLoading) return <Loading />;
+  const [isLoading, setIsLoading] = useState(true);
+  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+
+  const columns = useMemo<MRT_ColumnDef<OrderType>[]>(
+    () => [
+      {
+        accessorKey: "purchaser",
+        header: "заказщик",
+      },
+      {
+        accessorKey: "category",
+        header: "отдел",
+      },
+      {
+        accessorKey: "product",
+        header: "Названия товара",
+      },
+      {
+        accessorKey: "price",
+        header: "Цена",
+      },
+      {
+        accessorKey: "status",
+        header: "статус",
+      },
+    ],
+    [],
+  );
+
+  const rowVirtualizerInstanceRef =
+    useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting]);
+
+  if (orderLoading) return <Loading />;
   return (
     <Container>
       <h1>История Заказов</h1>
       <div className="content table-responsive table-full-width">
-        <table className="table table-hover table-striped">
-          <thead>
-            {column.map(name => (
-              <th className="text-capitalize" key={name}>
-                {name}
-              </th>
-            ))}
-          </thead>
-          {orders?.length && (
-            <tbody>
-              {orders?.map(order => (
-                <tr key={order.id}>
-                  <td>{order.id}</td>
-                  <td>{order.purchaser}</td>
-                  <td>{order.category}</td>
-                  <td>{order.product}</td>
-                  <td>{numberWithCommas(order.price)}</td>
-                  <td>{order.status}</td>
-                  {role !== Roles.purchasing && (
-                    <td>
-                      <div className={styles.viewBtn} onClick={handleNavigate(order.id)}>
-                        <img className={styles.viewImg} src="/assets/icons/edit.svg" alt="edit" />
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          )}
-        </table>
-        {!orders?.length && (
-          <div className="w-100">
-            <h2 className="text-center w-100 ">Спосок пуст</h2>
-          </div>
-        )}
+        <MaterialReactTable
+          columns={columns}
+          data={orders || []}
+          defaultDisplayColumn={{ enableResizing: true }}
+          enableBottomToolbar={false}
+          enableColumnResizing
+          enableColumnVirtualization
+          enableGlobalFilterModes
+          enableRowActions
+          renderRowActions={({ row }) => [
+            <div key={"view"} className={styles.viewBtn} onClick={handleNavigate(row.original.id)}>
+              <img className={styles.viewImg} src="/assets/icons/view.svg" alt="edit" />
+            </div>,
+          ]}
+          positionActionsColumn="last"
+          enablePagination={false}
+          enableRowNumbers
+          enableRowVirtualization
+          muiTableContainerProps={{ sx: { maxHeight: "600px" } }}
+          onSortingChange={setSorting}
+          state={{ isLoading, sorting }}
+          rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
+          rowVirtualizerProps={{ overscan: 5 }}
+          columnVirtualizerProps={{ overscan: 2 }}
+        />
       </div>
     </Container>
   );

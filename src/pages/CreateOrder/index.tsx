@@ -19,7 +19,7 @@ const CreateOrder = () => {
   const [delivery_time, $delivery_time] = useState(new Date());
   const [department, $department] = useState<number>();
   const [imageLoading, $imageLoading] = useState(false);
-  const [payment_type, $payment_type] = useState<string>("");
+  const [payment_type, $payment_type] = useState<string>(paymentType[0]);
   const { mutate: mutateOrder } = createOrderMutation();
 
   useEffect(() => {
