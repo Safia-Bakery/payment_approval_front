@@ -14,6 +14,7 @@ import useUserRoles from "hooks/useUserRoles";
 import ShowOrder from "pages/ShowOrder";
 import useToken from "hooks/useToken";
 import { Roles } from "utils/types";
+import Home from "pages/Home";
 
 const Navigation = () => {
   const token = useAppSelector(tokenSelector);
@@ -59,8 +60,9 @@ const Navigation = () => {
     <>
       {token && <SideBar />}
       <Routes>
+        <Route element={<Home />} path="/" />
         <Route element={<Login />} path="/login" />
-        <Route element={<HistoryOrders />} path="/history-orders" />
+        <Route index element={<HistoryOrders />} path="/history-orders" />
 
         {renderRoutes}
       </Routes>
