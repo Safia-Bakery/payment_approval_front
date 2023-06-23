@@ -17,6 +17,7 @@ import { Roles } from "utils/types";
 
 const Navigation = () => {
   const token = useAppSelector(tokenSelector);
+
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data: me, isError, error } = useToken({ enabled: !!token });
@@ -31,24 +32,23 @@ const Navigation = () => {
   useUserRoles({ enabled: !!token });
 
   const renderRoutes = useMemo(() => {
-    if (me?.role === Roles.purchasing || me?.role === Roles.accountant || me?.role === Roles.fin) {
+    if (me?.role === Roles.purchasing)
+      return <Route element={<CreateOrder />} path="/create-order" />;
+
+    if (me?.role === Roles.superadmin) {
       return (
         <>
-          <Route element={<CreateOrder />} path="/" />
-          <Route element={<Login />} path="/login" />
+          <Route element={<CreateOrder />} path="/create-order" />
           <Route element={<ActiveOrders />} path="/active-orders" />
-          <Route element={<HistoryOrders />} path="/history-orders" />
+          <Route element={<Users />} path="/users" />
+          <Route element={<EditUser />} path="/users/:id" />
+          <Route element={<ShowOrder />} path="/order/:id" />
         </>
       );
     } else {
       return (
         <>
-          <Route element={<CreateOrder />} path="/" />
-          <Route element={<Login />} path="/login" />
           <Route element={<ActiveOrders />} path="/active-orders" />
-          <Route element={<HistoryOrders />} path="/history-orders" />
-          <Route element={<Users />} path="/users" />
-          <Route element={<EditUser />} path="/users/:id" />
           <Route element={<ShowOrder />} path="/order/:id" />
         </>
       );
@@ -58,7 +58,12 @@ const Navigation = () => {
   return (
     <>
       {token && <SideBar />}
-      <Routes>{renderRoutes}</Routes>
+      <Routes>
+        <Route element={<Login />} path="/login" />
+        <Route element={<HistoryOrders />} path="/history-orders" />
+
+        {renderRoutes}
+      </Routes>
     </>
   );
 };

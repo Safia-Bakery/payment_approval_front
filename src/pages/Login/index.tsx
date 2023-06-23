@@ -29,7 +29,7 @@ const Login = () => {
   const { mutate } = loginMutation();
 
   useLayoutEffect(() => {
-    if (token) navigate("/");
+    if (token) navigate("/history-orders");
   }, [navigate, token]);
 
   const onSubmit = () => {
@@ -43,7 +43,7 @@ const Login = () => {
           axios.defaults.headers["Authorization"] = `Bearer ${token}`;
           dispatch(loginHandler(data.access_token));
           refetch();
-          navigate("/");
+          navigate("/history-orders");
           successToast("Добро пожаловать");
         },
         onError: (error: any) => errorToast(error.toString()),

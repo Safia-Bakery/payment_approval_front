@@ -9,6 +9,7 @@ import useCategories from "hooks/useCategories";
 import axios from "axios";
 import Loading from "components/Loader";
 import { errorToast, successToast } from "utils/toast";
+import { BASE_URL } from "api/apiClient";
 
 const paymentType = ["перечисления", "наличные", "перевод на карту"];
 
@@ -17,6 +18,7 @@ const CreateOrder = () => {
   const [imageId, $imageId] = useState<any>();
   const [delivery_time, $delivery_time] = useState(new Date());
   const [department, $department] = useState<number>();
+  const [imageLoading, $imageLoading] = useState(false);
   const [payment_type, $payment_type] = useState<string>("");
   const { mutate: mutateOrder } = createOrderMutation();
 
@@ -37,18 +39,21 @@ const CreateOrder = () => {
     if (e.target.files?.length) {
       let formData = new FormData();
       formData.append("image", e.target.files[0]);
+      $imageLoading(true);
       axios
-        .post("http://10.0.1.30:8000/image/upload", formData)
+        .post(`${BASE_URL}/image/upload`, formData)
         .then(({ data }) => {
           $imageId(data.id);
         })
-        .catch(e => console.log(e.message));
+        .catch(e => {
+          errorToast(e.message);
+        })
+        .finally(() => $imageLoading(false));
     }
   };
 
   const handleDept = (val: number) => () => $department(val);
   const handlePayment = (e: ChangeEvent<HTMLSelectElement>) => $payment_type(e.target.value);
-  console.log(imageId, "imageId");
   const onSubmit = () => {
     const { user_name, product_name, price, payer, provider, urgent, description } = getValues();
 
@@ -215,7 +220,10 @@ const CreateOrder = () => {
             )}
           </div>
 
-          <button type="submit" className={`btn btn-info btn-fill pull-right ${styles.btn}`}>
+          <button
+            disabled={imageLoading}
+            type="submit"
+            className={`btn btn-info btn-fill pull-right ${styles.btn}`}>
             Создать
           </button>
         </form>

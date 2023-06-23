@@ -64,6 +64,7 @@ export enum Roles {
   accountant = "accountant",
   unconfirmed = "unconfirmed",
   purchasing = "purchasing",
+  superadmin = "superadmin",
 }
 
 export interface MeTypes {

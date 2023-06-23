@@ -13,7 +13,7 @@ import Loading from "components/Loader";
 const ActiveOrders = () => {
   const navigate = useNavigate();
   const { data: orders, refetch, isLoading } = useOrders({});
-  const createOrder = () => navigate("/");
+  const createOrder = () => navigate("/history-orders");
   const role = useAppSelector(roleSelector);
   const { mutate } = orderStatusMutation();
 

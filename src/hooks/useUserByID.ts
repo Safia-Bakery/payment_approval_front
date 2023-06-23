@@ -8,6 +8,7 @@ export const useUserByID = ({ enabled = true, id }: { enabled?: boolean; id: num
     queryFn: () =>
       HttpClient.doGet(`/get/user/with/id/${id}`).then(({ data }) => data as UsersTypes),
     enabled,
+    refetchOnMount: true,
   });
 };
 

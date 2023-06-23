@@ -3,7 +3,7 @@ import Loading from "components/Loader";
 import useUsers from "hooks/useUsers";
 import { useNavigate } from "react-router-dom";
 
-const column = ["#", "ФИО", "Роль", "Действия"];
+const column = ["#", "Логин", "Роль", "Действия"];
 
 const Users = () => {
   const { data: users, isLoading } = useUsers({ enabled: true });

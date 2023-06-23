@@ -3,24 +3,33 @@ import InputBlock from "components/Input";
 import useUserRoles from "hooks/useUserRoles";
 import useUserByID from "hooks/useUserByID";
 import { useNavigate, useParams } from "react-router-dom";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useLayoutEffect, useState } from "react";
 import updateUser from "hooks/mutation/updateUserMutation";
 import useUsers from "hooks/useUsers";
 import Loading from "components/Loader";
 import { errorToast, successToast } from "utils/toast";
+import { Roles } from "utils/types";
 
 const EditUser = () => {
   const { data: roles } = useUserRoles({});
   const { id } = useParams();
-  const { data: user, isLoading } = useUserByID({ id: Number(id) });
-  const [userRole, $userRole] = useState("");
+  const {
+    data: user,
+    isLoading,
+    refetch: userRefetch,
+  } = useUserByID({ id: Number(id), enabled: !!id });
+  const [userRole, $userRole] = useState<Roles>();
   const { mutate } = updateUser();
   const navigate = useNavigate();
   const { refetch } = useUsers({});
 
+  const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    $userRole(e.target.value as Roles);
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (user) {
+    if (user && userRole) {
       mutate(
         { user_id: user?.id, role: userRole },
         {
@@ -35,6 +44,15 @@ const EditUser = () => {
     }
   };
 
+  useLayoutEffect(() => {
+    userRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    $userRole(user?.role);
+  }, [user?.role]);
+
   if (isLoading) return <Loading />;
   return (
     <Container>
@@ -43,13 +61,13 @@ const EditUser = () => {
         <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col-md-6 form-group">
-              <InputBlock disabled className="form-control" value={user?.username} label="ФИО" />
+              <InputBlock disabled className="form-control" value={user?.username} label="Логин" />
             </div>
             <div className="col-md-6 form-group">
               <label>РОЛЬ</label>
               <select
                 className="form-select"
-                onChange={e => $userRole(e.target.value)}
+                onChange={handleSelect}
                 aria-label="Default select example">
                 {roles?.length &&
                   roles.map(dep => (

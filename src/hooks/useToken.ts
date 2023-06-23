@@ -4,7 +4,7 @@ import { MeTypes } from "utils/types";
 
 export const useToken = ({ enabled = true }) => {
   return useQuery({
-    queryKey: ["me"],
+    queryKey: ["me_token"],
     queryFn: () => HttpClient.doGet("/me").then(({ data: response }) => response as MeTypes),
     enabled,
   });

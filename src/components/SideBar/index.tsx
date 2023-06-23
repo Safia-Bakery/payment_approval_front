@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./index.scss";
 import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import { logoutHandler, roleSelector } from "redux/reducers/authReducer";
@@ -6,10 +6,18 @@ import { Roles } from "utils/types";
 
 const purchasing = [
   {
-    name: "createOrder",
-    url: "/",
+    name: "История Заказов",
+    url: "/history-orders",
+    icon: "/assets/icons/historyOrder.svg",
+  },
+  {
+    name: "Создать Заказ",
+    url: "/create-order",
     icon: "/assets/icons/order.svg",
   },
+];
+
+const approvers = [
   {
     name: "Активные Заказы",
     url: "/active-orders",
@@ -25,7 +33,7 @@ const purchasing = [
 const superAdmins = [
   {
     name: "Создать Заказ",
-    url: "/",
+    url: "/create-order",
     icon: "/assets/icons/order.svg",
   },
   {
@@ -50,9 +58,11 @@ const SideBar = () => {
   const [active, $active] = useState(false);
   const role = useAppSelector(roleSelector);
 
-  console.log(role, "role sidebar");
-
-  // useEffect(() => )
+  const routeArr = useMemo(() => {
+    if (role === Roles.purchasing) return purchasing;
+    if (role === Roles.superadmin) return superAdmins;
+    else return approvers;
+  }, [role]);
 
   const handleLogout = () => dispatch(logoutHandler());
 
@@ -78,11 +88,7 @@ const SideBar = () => {
           </div>
 
           <ul className="nav mt-2">
-            {[
-              ...(role === Roles.purchasing || role === Roles.accountant || role === Roles.fin
-                ? purchasing
-                : superAdmins),
-            ].map(item => (
+            {routeArr.map(item => (
               <li key={item.url}>
                 <a className="nav-link" href={item.url}>
                   <img src={item.icon} alt={item.name} className="sidebarIcon" />
