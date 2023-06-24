@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import axios from "axios";
 import { loginHandler, tokenSelector } from "redux/reducers/authReducer";
 import { useNavigate } from "react-router-dom";
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 import useToken from "hooks/useToken";
 import { errorToast, successToast } from "utils/toast";
 import InputMask from "react-input-mask";
@@ -28,7 +28,7 @@ const Login = () => {
 
   const { mutate } = loginMutation();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (token) navigate("/history-orders");
   }, [navigate, token]);
 

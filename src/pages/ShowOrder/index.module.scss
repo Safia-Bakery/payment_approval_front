@@ -3,3 +3,13 @@
     text-transform: capitalize;
   }
 }
+.image {
+  max-width: 600px;
+  width: 100%;
+
+  img {
+    width: 100%;
+    object-fit: contain;
+    display: block;
+  }
+}

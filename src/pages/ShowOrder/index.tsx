@@ -59,7 +59,7 @@ const ShowOrder = () => {
       {order?.image && (
         <div className="d-flex flex-column">
           <h2>Картинки</h2>
-          <div className="">
+          <div className={styles.image}>
             <img src={`${BASE_URL}/${order.image}`} alt="product-img" />
           </div>
         </div>
