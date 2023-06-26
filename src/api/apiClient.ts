@@ -2,7 +2,7 @@ import axios, { CancelToken } from "axios";
 import { logoutHandler } from "redux/reducers/authReducer";
 import { store } from "redux/rootConfig";
 
-export const BASE_URL = "http://192.168.43.83:8000";
+export const BASE_URL = "http://185.74.5.198:8000";
 
 export const HttpConfig = {
   BASE_URL,
