@@ -1,6 +1,5 @@
 {
   "name": "payment_approval_front",
-  "homepage": "http://finance.safiabakery.uz",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -37,7 +36,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "sync": "aws s3 sync --profile '' ./build 's3://finance.safiabakery.uz",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
