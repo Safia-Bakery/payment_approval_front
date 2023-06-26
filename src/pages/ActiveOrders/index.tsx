@@ -22,6 +22,7 @@ const ActiveOrders = () => {
   const { data: orders, refetch, isLoading: orderLoading } = useOrders({});
   const createOrder = () => navigate("/history-orders");
   const role = useAppSelector(roleSelector);
+  const admin = role !== Roles.purchasing && role !== Roles.superadmin;
   const { mutate } = orderStatusMutation();
 
   const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
@@ -102,32 +103,36 @@ const ActiveOrders = () => {
           enableColumnResizing
           enableColumnVirtualization
           enableGlobalFilterModes
-          enableRowActions={role !== Roles.purchasing && role !== Roles.superadmin}
+          enableRowActions
           displayColumnDefOptions={{
             "mrt-row-actions": {
-              size: 250, //make actions column wider
+              size: admin ? 250 : 100,
             },
           }}
           renderRowActions={({ row }) => [
             <div key={"accept_deny"} className="d-flex align-items-center gap-1">
-              <button
-                onClick={handleStatus({
-                  order_id: row.original.id,
-                  status: Status.accepted,
-                })}
-                type="button"
-                className="btn btn-success">
-                Принять
-              </button>
-              <button
-                onClick={handleStatus({
-                  order_id: row.original.id,
-                  status: Status.denied,
-                })}
-                type="button"
-                className="btn btn-danger">
-                Отклонить
-              </button>
+              {admin && (
+                <>
+                  <button
+                    onClick={handleStatus({
+                      order_id: row.original.id,
+                      status: Status.accepted,
+                    })}
+                    type="button"
+                    className="btn btn-success">
+                    Принять
+                  </button>
+                  <button
+                    onClick={handleStatus({
+                      order_id: row.original.id,
+                      status: Status.denied,
+                    })}
+                    type="button"
+                    className="btn btn-danger">
+                    Отклонить
+                  </button>
+                </>
+              )}
               <div className={styles.viewBtn} onClick={handleNavigate(row.original.id)}>
                 <img className={styles.viewImg} src="/assets/icons/edit.svg" alt="edit" />
               </div>
