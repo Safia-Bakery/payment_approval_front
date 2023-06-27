@@ -45,7 +45,7 @@ const ActiveOrders = () => {
     () => [
       {
         accessorKey: "purchaser",
-        header: "заказщик",
+        header: "заказчик",
       },
       {
         accessorKey: "category",

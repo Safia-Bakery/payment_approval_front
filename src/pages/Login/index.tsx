@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import InputBlock from "components/Input";
 import styles from "./index.module.scss";
 import cl from "classnames";
 import loginMutation from "hooks/mutation/loginMutation";
@@ -65,14 +64,22 @@ const Login = () => {
               alwaysShowMask
             />
           </div>
-          <InputBlock
-            register={register("password", { required: "required" })}
-            className="form-control"
-            placeholder="Пароль"
-            inputType="password"
-            label="Пароль"
-            error={errors.password}
-          />
+          <div className="">
+            <label>Пароль</label>
+
+            <input
+              {...register("password", { required: "required" })}
+              className="form-control"
+              placeholder="Пароль"
+              type="password"
+            />
+
+            {errors.password && (
+              <div className="alert alert-danger p-2" role="alert">
+                {errors.password?.message?.toString()}
+              </div>
+            )}
+          </div>
 
           <button type="submit" className="btn btn-info btn-fill pull-right">
             Логин

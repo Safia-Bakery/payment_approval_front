@@ -21,7 +21,7 @@ const ShowOrder = () => {
             <td>{order?.category}</td>
           </tr>
           <tr>
-            <th>заказщика</th>
+            <th>заказчика</th>
             <td>{order?.purchaser}</td>
           </tr>
           <tr>

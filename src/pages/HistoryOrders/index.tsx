@@ -25,7 +25,7 @@ const HistoryOrders = () => {
     () => [
       {
         accessorKey: "purchaser",
-        header: "заказщик",
+        header: "заказчик",
       },
       {
         accessorKey: "category",

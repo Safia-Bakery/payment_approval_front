@@ -13,6 +13,11 @@ import { BASE_URL } from "api/apiClient";
 
 const paymentType = ["перечисления", "наличные", "перевод на карту"];
 
+const mockDepartment = [
+  { id: 1, name: "Фабрика" },
+  { id: 2, name: "Розница" },
+];
+
 const CreateOrder = () => {
   const { data: dept, isLoading } = useCategories({ enabled: false });
   const [imageId, $imageId] = useState<any>();
@@ -92,7 +97,7 @@ const CreateOrder = () => {
             <div className="col-md-4 form-group">
               <label>Выберите отдел</label>
               <div className="d-flex justify-content-between align-items-center gap-10">
-                {dept?.map(({ id, name }) => (
+                {(dept?.length ? dept : mockDepartment)?.map(({ id, name }) => (
                   <div key={id} className={styles.deptItem} onClick={handleDept(id)}>
                     <label>{name}</label>
                     <input
@@ -111,8 +116,8 @@ const CreateOrder = () => {
               <InputBlock
                 register={register("user_name", { required: "Обязательное поле" })}
                 className="form-control"
-                placeholder="Укажите заказщика"
-                label="Укажите заказщика"
+                placeholder="Укажите заказчика"
+                label="Укажите заказчика"
                 error={errors.user_name}
               />
             </div>
