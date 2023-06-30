@@ -23,6 +23,8 @@ export const queryClient = new QueryClient({
 const App = () => {
   const token = useAppSelector(tokenSelector);
 
+  console.log("app");
+
   useLayoutEffect(() => {
     if (token) axios.defaults.headers["Authorization"] = `Bearer ${token}`;
   }, [token]);

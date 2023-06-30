@@ -11,7 +11,7 @@ import Loading from "components/Loader";
 import { errorToast, successToast } from "utils/toast";
 import { BASE_URL } from "api/apiClient";
 
-const paymentType = ["перечисления", "наличные", "перевод на карту"];
+const paymentType = ["Перечисление", "наличные", "перевод на карту"];
 
 const mockDepartment = [
   { id: 1, name: "Фабрика" },
@@ -95,7 +95,7 @@ const CreateOrder = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
             <div className="col-md-4 form-group">
-              <label>Выберите отдел</label>
+              <label>Выберите сферу</label>
               <div className="d-flex justify-content-between align-items-center gap-10">
                 {(dept?.length ? dept : mockDepartment)?.map(({ id, name }) => (
                   <div key={id} className={styles.deptItem} onClick={handleDept(id)}>
@@ -125,8 +125,8 @@ const CreateOrder = () => {
               <InputBlock
                 register={register("product_name", { required: "Обязательное поле" })}
                 className="form-control"
-                placeholder="Названия товара"
-                label="Названия товара"
+                placeholder="Название товара"
+                label="Название товара"
                 error={errors.product_name}
               />
             </div>
@@ -135,8 +135,8 @@ const CreateOrder = () => {
                 register={register("price", { required: "Обязательное поле" })}
                 className="form-control"
                 inputType="number"
-                placeholder="Цена"
-                label="Цена"
+                placeholder="Цена (UZS)"
+                label="Цена (UZS)"
                 error={errors.price}
               />
             </div>
@@ -199,7 +199,8 @@ const CreateOrder = () => {
                 selected={delivery_time}
                 onChange={(date: Date) => reserveTime(date)}
                 timeInputLabel="Time:"
-                dateFormat="MM/dd/yyyy"
+                dateFormat="MM.dd.yyyy  HH:mm "
+                showTimeInput
                 className={`${styles.datePicker} form-control`}
               />
               <div className={styles.urgent}>
@@ -210,13 +211,14 @@ const CreateOrder = () => {
           </div>
 
           <div className={`row mb-4 col-md-12 ${styles.uploadImage}`}>
-            <label>Добавить фото</label>
+            <label>Добавить файл</label>
             <input
               className="form-control"
               type="file"
+              multiple
               onChange={handleImage}
-              name="image-upload"
-              accept="image/*"
+              name="file-upload"
+              // accept="image/*"
             />
             {errors.image && (
               <div className="alert alert-danger p-2" role="alert">

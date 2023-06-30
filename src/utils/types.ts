@@ -13,7 +13,15 @@ export interface CategoryTypes {
 }
 export interface RoleList {
   success: boolean;
-  listroles: Roles[];
+  listroles: {
+    musa: "Руководитель отдела закупа";
+    shakhzod: "Директор производства";
+    begzod: "Директор розницы";
+    fin: "Финансовый отдел";
+    accountant: "Бухгалтерия";
+    unconfirmed: "Роль не выбран";
+    purchasing: "Отдел закупа";
+  }[];
 }
 
 export interface UsersTypes {
@@ -21,28 +29,34 @@ export interface UsersTypes {
   hashed_password: string;
   time_created: string;
   id: number;
-  role: Roles;
+  role: StatusRoles;
   full_name: string;
   telegram_id: number;
 }
 
-export interface OrderType {
-  category_id: number;
+export interface Order {
   purchaser: string;
   seller: string;
   price: number;
-  status: string;
-  urgent: true;
+  status: StatusRoles;
+  urgent: boolean;
   description: string;
   id: number;
   product: string;
   delivery_time: Date;
   payer: string;
   time_created: Date;
-  image_id: null | string | number;
   payment_type: string;
   image?: string;
-  category: string;
+  category: CategoryTypes;
+}
+
+export interface OrderType {
+  items: Order[];
+  total: number;
+  page: number;
+  size: number;
+  pages: number;
 }
 export interface CreateOrderType {
   category_id: number;
@@ -58,7 +72,7 @@ export interface CreateOrderType {
   payment_type: string;
 }
 
-export enum Roles {
+export enum StatusRoles {
   musa = "musa",
   shakhzod = "shakhzod",
   begzod = "begzod",
@@ -67,12 +81,14 @@ export enum Roles {
   unconfirmed = "unconfirmed",
   purchasing = "purchasing",
   superadmin = "superadmin",
+  paid = "paid",
+  denied = "denied",
 }
 
 export interface MeTypes {
   id: number;
   username: string;
-  role: Roles;
+  role: StatusRoles;
 }
 export enum Status {
   accepted = "accepted",

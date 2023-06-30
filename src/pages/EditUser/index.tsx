@@ -8,7 +8,7 @@ import updateUser from "hooks/mutation/updateUserMutation";
 import useUsers from "hooks/useUsers";
 import Loading from "components/Loader";
 import { errorToast, successToast } from "utils/toast";
-import { Roles } from "utils/types";
+import { StatusRoles } from "utils/types";
 
 const EditUser = () => {
   const { data: roles } = useUserRoles({});
@@ -18,13 +18,13 @@ const EditUser = () => {
     isLoading,
     refetch: userRefetch,
   } = useUserByID({ id: Number(id), enabled: !!id });
-  const [userRole, $userRole] = useState<Roles>();
+  const [userRole, $userRole] = useState<StatusRoles>();
   const { mutate } = updateUser();
   const navigate = useNavigate();
   const { refetch } = useUsers({});
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
-    $userRole(e.target.value as Roles);
+    $userRole(e.target.value as StatusRoles);
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -69,8 +69,8 @@ const EditUser = () => {
                 className="form-select"
                 onChange={handleSelect}
                 aria-label="Default select example">
-                {roles?.length &&
-                  roles.map(dep => (
+                {roles &&
+                  Object.keys(roles).map(dep => (
                     <option selected={dep === user?.role} key={dep} value={dep}>
                       {dep}
                     </option>

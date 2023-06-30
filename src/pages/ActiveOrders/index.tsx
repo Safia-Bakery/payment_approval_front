@@ -4,29 +4,35 @@ import styles from "./index.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "redux/utils/types";
 import { roleSelector } from "redux/reducers/authReducer";
-import { OrderType, Roles, Status } from "utils/types";
+import { StatusRoles, Status } from "utils/types";
 import orderStatusMutation from "hooks/mutation/orderStatusMutation";
 import { errorToast, successToast } from "utils/toast";
 import Loading from "components/Loader";
+import { handleStatus, numberWithCommas } from "utils/helpers";
+import Pagination from "components/Pagination";
+import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-  type MRT_SortingState,
-  type MRT_Virtualizer,
-} from "material-react-table";
-import { useEffect, useMemo, useRef, useState } from "react";
+const itemsPerPage = 5;
 
 const ActiveOrders = () => {
   const navigate = useNavigate();
-  const { data: orders, refetch, isLoading: orderLoading } = useOrders({});
   const createOrder = () => navigate("/history-orders");
   const role = useAppSelector(roleSelector);
-  const admin = role !== Roles.purchasing && role !== Roles.superadmin;
+  const admin = role !== StatusRoles.purchasing && role !== StatusRoles.superadmin;
   const { mutate } = orderStatusMutation();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    data: orders,
+    refetch,
+    isLoading: orderLoading,
+  } = useOrders({ size: itemsPerPage, page: currentPage });
+
+  const handlePageChange = (page: number) => setCurrentPage(page);
+
   const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
-  const handleStatus = (body: { order_id: number; status: Status }) => () => {
+  const handleStatusSubmit = (body: { order_id: number; status: Status }) => () => {
     mutate(body, {
       onSuccess: () => {
         refetch();
@@ -38,53 +44,27 @@ const ActiveOrders = () => {
     });
   };
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const handleIdx = (index: number) => {
+    if (currentPage === 1) return index + 1;
+    else return index + 1 + itemsPerPage * (currentPage - 1);
+  };
 
-  const columns = useMemo<MRT_ColumnDef<OrderType>[]>(
-    () => [
-      {
-        accessorKey: "purchaser",
-        header: "заказчик",
-      },
-      {
-        accessorKey: "category",
-        header: "отдел",
-      },
-      {
-        accessorKey: "product",
-        header: "Названия товара",
-      },
-      {
-        accessorKey: "price",
-        header: "Цена",
-      },
-      {
-        accessorKey: "status",
-        header: "статус",
-      },
-    ],
-    [],
-  );
-
-  const rowVirtualizerInstanceRef =
-    useRef<MRT_Virtualizer<HTMLDivElement, HTMLTableRowElement>>(null);
+  const column = [
+    "#",
+    "Заказчик",
+    "Отдел",
+    "Название товара",
+    "Цена (UZS)",
+    "Время поступления",
+    "Статус",
+    admin ? "Дествия" : "",
+  ];
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsLoading(false);
-    }
-  }, []);
+    refetch();
+  }, [currentPage, refetch]);
 
-  useEffect(() => {
-    try {
-      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [sorting]);
-
-  if (isLoading || orderLoading) return <Loading />;
+  if (orderLoading) return <Loading />;
 
   return (
     <Container>
@@ -95,84 +75,31 @@ const ActiveOrders = () => {
         </button>
       </div>
       <div className="content table-responsive table-full-width">
-        <MaterialReactTable
-          columns={columns}
-          data={orders || []}
-          defaultDisplayColumn={{ enableResizing: true }}
-          enableBottomToolbar={false}
-          enableColumnResizing
-          enableColumnVirtualization
-          enableGlobalFilterModes
-          enableRowActions
-          displayColumnDefOptions={{
-            "mrt-row-actions": {
-              size: admin ? 250 : 100,
-            },
-          }}
-          renderRowActions={({ row }) => [
-            <div key={"accept_deny"} className="d-flex align-items-center gap-1">
-              {admin && (
-                <>
-                  <button
-                    onClick={handleStatus({
-                      order_id: row.original.id,
-                      status: Status.accepted,
-                    })}
-                    type="button"
-                    className="btn btn-success">
-                    Принять
-                  </button>
-                  <button
-                    onClick={handleStatus({
-                      order_id: row.original.id,
-                      status: Status.denied,
-                    })}
-                    type="button"
-                    className="btn btn-danger">
-                    Отклонить
-                  </button>
-                </>
-              )}
-              <div className={styles.viewBtn} onClick={handleNavigate(row.original.id)}>
-                <img className={styles.viewImg} src="/assets/icons/edit.svg" alt="edit" />
-              </div>
-            </div>,
-          ]}
-          positionActionsColumn="last"
-          enablePagination={false}
-          enableRowNumbers
-          enableRowVirtualization
-          muiTableContainerProps={{ sx: { maxHeight: "600px" } }}
-          onSortingChange={setSorting}
-          state={{ isLoading, sorting }}
-          rowVirtualizerInstanceRef={rowVirtualizerInstanceRef}
-          rowVirtualizerProps={{ overscan: 5 }}
-          columnVirtualizerProps={{ overscan: 2 }}
-        />
-        {/* <table className="table table-hover table-striped">
+        <table className="table table-hover table-striped">
           <thead>
             {column.map(name => (
-              <th className="text-capitalize" key={name}>
+              <th className=" " key={name}>
                 {name}
               </th>
             ))}
           </thead>
 
-          {orders?.length && (
+          {orders?.items.length && (
             <tbody>
-              {orders?.map(order => (
+              {orders?.items.map((order, idx) => (
                 <tr key={order.id}>
-                  <td>{order.id}</td>
+                  <td className={styles.num}> {handleIdx(idx)}</td>
                   <td>{order.purchaser}</td>
-                  <td>{order?.category}</td>
+                  <td>{order?.category.name}</td>
                   <td>{order.product}</td>
                   <td>{numberWithCommas(order.price)}</td>
-                  <td>{order.status}</td>
-                  {role !== Roles.purchasing ? (
+                  <td>{dayjs(order.time_created).format("DD-MMM-YYYY HH:mm")}</td>
+                  <td>{handleStatus(order.status)}</td>
+                  {admin ? (
                     <>
                       <td className="d-flex gap-2 align-items-center">
                         <button
-                          onClick={handleStatus({
+                          onClick={handleStatusSubmit({
                             order_id: order.id,
                             status: Status.accepted,
                           })}
@@ -181,7 +108,7 @@ const ActiveOrders = () => {
                           Принять
                         </button>
                         <button
-                          onClick={handleStatus({
+                          onClick={handleStatusSubmit({
                             order_id: order.id,
                             status: Status.denied,
                           })}
@@ -191,18 +118,31 @@ const ActiveOrders = () => {
                         </button>
                         <div className="mx-2" />
                         <div className={styles.viewBtn} onClick={handleNavigate(order.id)}>
-                          <img className={styles.viewImg} src="/assets/icons/edit.svg" alt="edit" />
+                          <img className={styles.viewImg} src="/assets/icons/view.svg" alt="edit" />
                         </div>
                       </td>
                     </>
                   ) : (
-                    <td />
+                    <td>
+                      <div className={styles.viewBtn} onClick={handleNavigate(order.id)}>
+                        <img className={styles.viewImg} src="/assets/icons/view.svg" alt="edit" />
+                      </div>
+                    </td>
                   )}
                 </tr>
               ))}
             </tbody>
           )}
-        </table> */}
+
+          {!!orders && (
+            <Pagination
+              totalItems={orders?.total}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </table>
       </div>
     </Container>
   );

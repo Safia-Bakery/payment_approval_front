@@ -13,7 +13,7 @@ import EditUser from "pages/EditUser";
 import useUserRoles from "hooks/useUserRoles";
 import ShowOrder from "pages/ShowOrder";
 import useToken from "hooks/useToken";
-import { Roles } from "utils/types";
+import { StatusRoles } from "utils/types";
 import Home from "pages/Home";
 
 const Navigation = () => {
@@ -33,10 +33,10 @@ const Navigation = () => {
   useUserRoles({ enabled: !!token });
 
   const renderRoutes = useMemo(() => {
-    if (me?.role === Roles.purchasing)
+    if (me?.role === StatusRoles.purchasing)
       return <Route element={<CreateOrder />} path="/create-order" />;
 
-    if (me?.role === Roles.superadmin) {
+    if (me?.role === StatusRoles.superadmin) {
       return (
         <>
           <Route element={<CreateOrder />} path="/create-order" />
@@ -60,9 +60,10 @@ const Navigation = () => {
     <>
       {token && <SideBar />}
       <Routes>
-        <Route element={<Home />} path="/" />
+        {/* <Route element={<Home />} path="/" /> */}
+        <Route element={<Home />} path="*" />
         <Route element={<Login />} path="/login" />
-        <Route index element={<HistoryOrders />} path="/history-orders" />
+        <Route element={<HistoryOrders />} path="/history-orders" />
 
         {renderRoutes}
       </Routes>

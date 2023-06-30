@@ -18,18 +18,18 @@ const ShowOrder = () => {
         <tbody>
           <tr>
             <th>отдел</th>
-            <td>{order?.category}</td>
+            <td>{order?.category.name}</td>
           </tr>
           <tr>
-            <th>заказчика</th>
+            <th>заказчик</th>
             <td>{order?.purchaser}</td>
           </tr>
           <tr>
-            <th>Названия товара</th>
+            <th>Название товара</th>
             <td>{order?.product}</td>
           </tr>
           <tr>
-            <th>Цена</th>
+            <th>Цена (UZS)</th>
             <td>{order?.price}</td>
           </tr>
           <tr>
@@ -60,7 +60,9 @@ const ShowOrder = () => {
         <div className="d-flex flex-column">
           <h2>Картинки</h2>
           <div className={styles.image}>
-            <img src={`${BASE_URL}/${order.image}`} alt="product-img" />
+            <a href={`${BASE_URL}/${order.image}`} target="_blank" rel="noreferrer">
+              {order.image}
+            </a>
           </div>
         </div>
       )}

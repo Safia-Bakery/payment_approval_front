@@ -2,6 +2,7 @@ import Container from "components/Container";
 import Loading from "components/Loader";
 import useUsers from "hooks/useUsers";
 import { useNavigate } from "react-router-dom";
+import { handleStatus } from "utils/helpers";
 
 const column = ["#", "Логин", "Имя", "Роль", "Действия"];
 
@@ -17,7 +18,7 @@ const Users = () => {
         <table className="table table-hover table-striped">
           <thead>
             {column.map(name => (
-              <th className="text-capitalize" key={name}>
+              <th className=" " key={name}>
                 {name}
               </th>
             ))}
@@ -30,7 +31,7 @@ const Users = () => {
                   <td>{user.username}</td>
                   <td>{user.full_name}</td>
 
-                  <td>{user.role}</td>
+                  <td>{handleStatus(user.role)}</td>
                   <td>
                     <button
                       onClick={() => navigate(`/users/${user.id}`)}

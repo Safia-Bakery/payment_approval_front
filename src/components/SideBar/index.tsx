@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import "./index.scss";
 import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import { logoutHandler, roleSelector } from "redux/reducers/authReducer";
-import { Roles } from "utils/types";
+import { StatusRoles } from "utils/types";
 
 const purchasing = [
   {
@@ -59,8 +59,8 @@ const SideBar = () => {
   const role = useAppSelector(roleSelector);
 
   const routeArr = useMemo(() => {
-    if (role === Roles.purchasing) return purchasing;
-    if (role === Roles.superadmin) return superAdmins;
+    if (role === StatusRoles.purchasing) return purchasing;
+    if (role === StatusRoles.superadmin) return superAdmins;
     else return approvers;
   }, [role]);
 
@@ -80,7 +80,7 @@ const SideBar = () => {
         <div className="sidebar-wrapper">
           <div
             onClick={handleLogout}
-            className="d-flex text-center justify-content-end px-3 pt-3 font-weight-bold pointer">
+            className="d-flex text-center justify-content-end px-3 pt-3 font-weight-bold pointer logoutBlock">
             Выйти
             <div className="logout ml-2">
               <img src="/assets/icons/logout.svg" alt="logout" />
