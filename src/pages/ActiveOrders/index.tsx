@@ -4,7 +4,7 @@ import styles from "./index.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "redux/utils/types";
 import { roleSelector } from "redux/reducers/authReducer";
-import { StatusRoles, Status } from "utils/types";
+import { StatusRoles, Status, Order } from "utils/types";
 import orderStatusMutation from "hooks/mutation/orderStatusMutation";
 import { errorToast, successToast } from "utils/toast";
 import Loading from "components/Loader";
@@ -23,12 +23,34 @@ const ActiveOrders = () => {
   const { mutate } = orderStatusMutation();
   const [submitting, $submitting] = useState(false);
 
+  const [sortKey, setSortKey] = useState<keyof Order>();
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (key: any) => {
+    if (key === sortKey) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortKey(key);
+      setSortOrder("asc");
+    }
+  };
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: orders,
     refetch,
     isLoading: orderLoading,
   } = useOrders({ size: itemsPerPage, page: currentPage });
+
+  const sortData = () => {
+    if (orders?.items && sortKey) {
+      const sortedData = [...orders?.items].sort((a, b) => {
+        if (a[sortKey]! < b[sortKey]!) return sortOrder === "asc" ? -1 : 1;
+        if (a[sortKey]! > b[sortKey]!) return sortOrder === "asc" ? 1 : -1;
+        else return 0;
+      });
+      return sortedData;
+    }
+  };
 
   const handlePageChange = (page: number) => setCurrentPage(page);
 
@@ -58,14 +80,14 @@ const ActiveOrders = () => {
   };
 
   const column = [
-    "#",
-    "Заказчик",
-    "Отдел",
-    "Название товара",
-    "Цена (UZS)",
-    "Время поступления",
-    "Статус",
-    admin ? "Дествия" : "",
+    { name: "#", key: "id" as keyof Order["id"] },
+    { name: "Заказчик", key: "purchaser" as keyof Order["purchaser"] },
+    { name: "Отдел", key: "category.name" as keyof Order["category"] },
+    { name: "Название товара", key: "product" as keyof Order["product"] },
+    { name: "Цена (UZS)", key: "price" as keyof Order["price"] },
+    { name: "Время поступления", key: "time_created" as keyof Order["time_created"] },
+    { name: "Статус", key: "status" as keyof Order["status"] },
+    admin ? { name: "Дествия", key: "" } : { name: "", key: "" },
   ];
 
   useEffect(() => {
@@ -86,17 +108,22 @@ const ActiveOrders = () => {
         <table className="table table-hover ">
           <thead>
             <tr>
-              {column.map(name => (
-                <th className=" font-weight-bold text-dark" key={name}>
-                  {name}
-                </th>
-              ))}
+              {column.map(({ name, key }) => {
+                return (
+                  <th
+                    onClick={() => handleSort(key)}
+                    className=" font-weight-bold text-dark"
+                    key={name}>
+                    {name} {sortKey === key && <span>{sortOrder === "asc" ? "▲" : "▼"}</span>}
+                  </th>
+                );
+              })}
             </tr>
           </thead>
 
           {orders?.items.length && (
             <tbody>
-              {orders?.items.map((order, idx) => (
+              {(sortData()?.length ? sortData() : orders?.items)?.map((order, idx) => (
                 <tr className={rowColor(order.status)} key={order.id}>
                   <td className={styles.num}> {handleIdx(idx)}</td>
                   <td>{order.purchaser}</td>

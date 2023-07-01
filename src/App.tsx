@@ -1,8 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { EPresetTimes } from "./utils/types";
 import { BrowserRouter } from "react-router-dom";
-
-import "react-datetime/css/react-datetime.css";
 import { useAppSelector } from "./redux/utils/types";
 import { tokenSelector } from "./redux/reducers/authReducer";
 import { useLayoutEffect } from "react";

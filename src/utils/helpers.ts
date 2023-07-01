@@ -51,3 +51,7 @@ export const rowColor = (status: StatusRoles) => {
       return "table-info";
   }
 };
+
+export const getKeyByValue = (object: any, value: any) => {
+  return Object.keys(object).find(key => object[key] === value);
+};
