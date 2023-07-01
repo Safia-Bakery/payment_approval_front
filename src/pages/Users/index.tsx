@@ -17,11 +17,13 @@ const Users = () => {
       <div className="content table-responsive table-full-width">
         <table className="table table-hover table-striped">
           <thead>
-            {column.map(name => (
-              <th className=" " key={name}>
-                {name}
-              </th>
-            ))}
+            <tr>
+              {column.map(name => (
+                <th className="font-weight-bold text-dark" key={name}>
+                  {name}
+                </th>
+              ))}
+            </tr>
           </thead>
           <tbody>
             {users?.map((user, index) => {

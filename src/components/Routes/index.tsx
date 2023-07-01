@@ -26,8 +26,8 @@ const Navigation = () => {
   useLayoutEffect(() => {
     if (!token) navigate("/login");
     if (isError || error) dispatch(logoutHandler());
-    if (me?.role) dispatch(roleHandler(me.role));
-  }, [token, isError, me?.role, error, navigate, dispatch]);
+    if (me?.role) dispatch(roleHandler(me));
+  }, [token, isError, me, error, navigate, dispatch]);
 
   useCategories({ enabled: !!token });
   useUserRoles({ enabled: !!token });
@@ -54,7 +54,7 @@ const Navigation = () => {
         </>
       );
     }
-  }, [me]);
+  }, [me?.role]);
 
   return (
     <>

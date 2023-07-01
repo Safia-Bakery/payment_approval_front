@@ -8,7 +8,7 @@ import { StatusRoles, Status } from "utils/types";
 import orderStatusMutation from "hooks/mutation/orderStatusMutation";
 import { errorToast, successToast } from "utils/toast";
 import Loading from "components/Loader";
-import { handleStatus, numberWithCommas } from "utils/helpers";
+import { handleStatus, numberWithCommas, rowColor } from "utils/helpers";
 import Pagination from "components/Pagination";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -17,10 +17,11 @@ const itemsPerPage = 5;
 
 const ActiveOrders = () => {
   const navigate = useNavigate();
-  const createOrder = () => navigate("/history-orders");
-  const role = useAppSelector(roleSelector);
-  const admin = role !== StatusRoles.purchasing && role !== StatusRoles.superadmin;
+  const createOrder = () => navigate("/create-orders");
+  const me = useAppSelector(roleSelector);
+  const admin = me?.role !== StatusRoles.purchasing && me?.role !== StatusRoles.superadmin;
   const { mutate } = orderStatusMutation();
+  const [submitting, $submitting] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const {
@@ -32,15 +33,22 @@ const ActiveOrders = () => {
   const handlePageChange = (page: number) => setCurrentPage(page);
 
   const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
+
   const handleStatusSubmit = (body: { order_id: number; status: Status }) => () => {
+    $submitting(true);
     mutate(body, {
       onSuccess: () => {
         refetch();
         body.status === Status.accepted
           ? successToast("успешно принито")
           : successToast("успешно отклонено");
+
+        $submitting(false);
       },
-      onError: (error: any) => errorToast(error.toString()),
+      onError: (error: any) => {
+        errorToast(error.toString());
+        $submitting(false);
+      },
     });
   };
 
@@ -75,19 +83,21 @@ const ActiveOrders = () => {
         </button>
       </div>
       <div className="content table-responsive table-full-width">
-        <table className="table table-hover table-striped">
+        <table className="table table-hover ">
           <thead>
-            {column.map(name => (
-              <th className=" " key={name}>
-                {name}
-              </th>
-            ))}
+            <tr>
+              {column.map(name => (
+                <th className=" font-weight-bold text-dark" key={name}>
+                  {name}
+                </th>
+              ))}
+            </tr>
           </thead>
 
           {orders?.items.length && (
             <tbody>
               {orders?.items.map((order, idx) => (
-                <tr key={order.id}>
+                <tr className={rowColor(order.status)} key={order.id}>
                   <td className={styles.num}> {handleIdx(idx)}</td>
                   <td>{order.purchaser}</td>
                   <td>{order?.category.name}</td>
@@ -99,6 +109,7 @@ const ActiveOrders = () => {
                     <>
                       <td className="d-flex gap-2 align-items-center">
                         <button
+                          disabled={submitting}
                           onClick={handleStatusSubmit({
                             order_id: order.id,
                             status: Status.accepted,
@@ -108,6 +119,7 @@ const ActiveOrders = () => {
                           Принять
                         </button>
                         <button
+                          disabled={submitting}
                           onClick={handleStatusSubmit({
                             order_id: order.id,
                             status: Status.denied,
@@ -133,16 +145,20 @@ const ActiveOrders = () => {
               ))}
             </tbody>
           )}
-
-          {!!orders && (
-            <Pagination
-              totalItems={orders?.total}
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              onPageChange={handlePageChange}
-            />
-          )}
         </table>
+        {!!orders && (
+          <Pagination
+            totalItems={orders?.total}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        )}
+        {!orders?.items?.length && (
+          <div className="w-100">
+            <p className="text-center w-100 ">Спосок пуст</p>
+          </div>
+        )}
       </div>
     </Container>
   );

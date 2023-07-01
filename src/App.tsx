@@ -1,7 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { EPresetTimes } from "./utils/types";
 import { BrowserRouter } from "react-router-dom";
-import "react-datepicker/dist/react-datepicker.css";
+
+import "react-datetime/css/react-datetime.css";
 import { useAppSelector } from "./redux/utils/types";
 import { tokenSelector } from "./redux/reducers/authReducer";
 import { useLayoutEffect } from "react";
@@ -22,8 +23,6 @@ export const queryClient = new QueryClient({
 
 const App = () => {
   const token = useAppSelector(tokenSelector);
-
-  console.log("app");
 
   useLayoutEffect(() => {
     if (token) axios.defaults.headers["Authorization"] = `Bearer ${token}`;

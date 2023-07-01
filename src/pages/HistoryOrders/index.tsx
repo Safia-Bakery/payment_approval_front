@@ -3,10 +3,9 @@ import styles from "./index.module.scss";
 import { useNavigate } from "react-router-dom";
 import useOrders from "hooks/useOrders";
 import Loading from "components/Loader";
-import { handleStatus, numberWithCommas } from "utils/helpers";
+import { handleStatus, numberWithCommas, rowColor } from "utils/helpers";
 import Pagination from "components/Pagination";
 import { useEffect, useState } from "react";
-import { StatusRoles } from "utils/types";
 
 const column = ["#", "Заказчик", "Отдел", "Название товара", "Цена (UZS)", "Статус"];
 const itemsPerPage = 5;
@@ -41,18 +40,20 @@ const HistoryOrders = () => {
     <Container>
       <h1>История Заказов</h1>
       <div className="content table-responsive table-full-width">
-        <table className="table table-hover table-striped">
+        <table className="table table-hover">
           <thead>
-            {column.map(name => (
-              <th className=" " key={name}>
-                {name}
-              </th>
-            ))}
+            <tr>
+              {column.map(name => (
+                <th className="font-weight-bold text-dark" key={name}>
+                  {name}
+                </th>
+              ))}
+            </tr>
           </thead>
           {orders?.items.length && (
             <tbody>
               {orders?.items.map((order, idx) => (
-                <tr key={order.id}>
+                <tr className={rowColor(order.status)} key={order.id}>
                   <td>{handleIdx(idx)}</td>
                   <td>{order.purchaser}</td>
                   <td>{order.category.name}</td>
@@ -71,7 +72,7 @@ const HistoryOrders = () => {
         </table>
         {!orders?.items?.length && (
           <div className="w-100">
-            <h2 className="text-center w-100 ">Спосок пуст</h2>
+            <p className="text-center w-100 ">Спосок пуст</p>
           </div>
         )}
       </div>

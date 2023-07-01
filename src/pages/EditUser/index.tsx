@@ -71,7 +71,7 @@ const EditUser = () => {
                 aria-label="Default select example">
                 {roles &&
                   Object.keys(roles).map(dep => (
-                    <option selected={dep === user?.role} key={dep} value={dep}>
+                    <option key={dep} value={dep}>
                       {dep}
                     </option>
                   ))}

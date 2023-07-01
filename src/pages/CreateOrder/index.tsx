@@ -3,15 +3,15 @@ import InputBlock from "components/Input";
 import styles from "./index.module.scss";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import DatePicker from "react-datepicker";
 import createOrderMutation from "hooks/mutation/createOrderMutation";
 import useCategories from "hooks/useCategories";
 import axios from "axios";
 import Loading from "components/Loader";
 import { errorToast, successToast } from "utils/toast";
 import { BASE_URL } from "api/apiClient";
+import dayjs from "dayjs";
 
-const paymentType = ["Перечисление", "наличные", "перевод на карту"];
+const paymentType = ["Перечисление", "Наличные", "Перевод на карту"];
 
 const mockDepartment = [
   { id: 1, name: "Фабрика" },
@@ -21,12 +21,21 @@ const mockDepartment = [
 const CreateOrder = () => {
   const { data: dept, isLoading } = useCategories({ enabled: false });
   const [imageId, $imageId] = useState<any>();
-  const [delivery_time, $delivery_time] = useState(new Date());
   const [department, $department] = useState<number>();
   const [imageLoading, $imageLoading] = useState(false);
   const [payment_type, $payment_type] = useState<string>(paymentType[0]);
   const { mutate: mutateOrder } = createOrderMutation();
 
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
+
+  const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(event.target.value);
+  };
+
+  const handleTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSelectedTime(event.target.value);
+  };
   useEffect(() => {
     if (dept?.length) $department(dept[0].id);
   }, [dept]);
@@ -39,7 +48,6 @@ const CreateOrder = () => {
     reset,
   } = useForm();
 
-  const reserveTime = (time: Date) => $delivery_time(time);
   const handleImage = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length) {
       let formData = new FormData();
@@ -68,7 +76,7 @@ const CreateOrder = () => {
         purchaser: user_name,
         product: product_name,
         seller: provider,
-        delivery_time,
+        delivery_time: dayjs(selectedDate + selectedTime).toDate(),
         price,
         payer,
         urgent,
@@ -195,13 +203,20 @@ const CreateOrder = () => {
             </div>
             <div className="col-md-6 form-group d-flex flex-column">
               <label>Срок</label>
-              <DatePicker
-                selected={delivery_time}
-                onChange={(date: Date) => reserveTime(date)}
-                timeInputLabel="Time:"
-                dateFormat="MM.dd.yyyy  HH:mm "
-                showTimeInput
-                className={`${styles.datePicker} form-control`}
+              <InputBlock
+                className="form-control"
+                inputType="date"
+                error={errors.date}
+                register={register("date", { required: "required" })}
+                value={selectedDate}
+                onChange={handleDateChange}
+              />
+
+              <InputBlock
+                className="form-control"
+                inputType="time"
+                value={selectedTime}
+                onChange={handleTimeChange}
               />
               <div className={styles.urgent}>
                 <label>Срочно</label>

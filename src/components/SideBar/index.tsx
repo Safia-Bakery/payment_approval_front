@@ -56,13 +56,13 @@ const superAdmins = [
 const SideBar = () => {
   const dispatch = useAppDispatch();
   const [active, $active] = useState(false);
-  const role = useAppSelector(roleSelector);
+  const me = useAppSelector(roleSelector);
 
   const routeArr = useMemo(() => {
-    if (role === StatusRoles.purchasing) return purchasing;
-    if (role === StatusRoles.superadmin) return superAdmins;
+    if (me?.role === StatusRoles.purchasing) return purchasing;
+    if (me?.role === StatusRoles.superadmin) return superAdmins;
     else return approvers;
-  }, [role]);
+  }, [me?.role]);
 
   const handleLogout = () => dispatch(logoutHandler());
 

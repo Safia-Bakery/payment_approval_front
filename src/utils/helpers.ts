@@ -39,3 +39,15 @@ export const handleStatus = (status: StatusRoles) => {
       return "Роль не выбран";
   }
 };
+
+export const rowColor = (status: StatusRoles) => {
+  switch (status) {
+    case StatusRoles.paid:
+      return "table-success";
+    case StatusRoles.denied:
+      return "table-danger";
+
+    default:
+      return "table-info";
+  }
+};

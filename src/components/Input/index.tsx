@@ -1,11 +1,11 @@
-import { FC } from "react";
+import { ChangeEvent, FC } from "react";
 import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 
 interface Props {
-  onChange?: (value: string) => void;
+  onChange?: (val: ChangeEvent<HTMLInputElement>) => void;
   className?: string;
   value?: string;
-  inputType?: "text" | "password" | "email" | "number";
+  inputType?: "text" | "password" | "email" | "number" | "date" | "time";
   placeholder?: string | null;
   autoFocus?: boolean;
   onFocus?: () => void;
@@ -30,7 +30,7 @@ const InputBlock: FC<Props> = ({
 }) => {
   return (
     <div>
-      <label>{label}</label>
+      {label && <label>{label}</label>}
       <input
         {...register}
         disabled={disabled}
@@ -40,7 +40,7 @@ const InputBlock: FC<Props> = ({
         onFocus={onFocus}
         autoFocus={autoFocus}
         placeholder={placeholder || ""}
-        onChange={e => onChange?.(e.target.value)}
+        onChange={onChange}
       />
       {error && (
         <div className="alert alert-danger p-2" role="alert">

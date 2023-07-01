@@ -17,7 +17,7 @@ export const useOrders = ({
     queryKey: ["orders", history],
     queryFn: () =>
       HttpClient.doGet(`/get/${history ? "done/" : ""}order/list?size=${size}&page=${page}`).then(
-        ({ data: response }) => response as OrderType,
+        ({ data: response }) => (response as OrderType) || null,
       ),
     enabled,
   });
