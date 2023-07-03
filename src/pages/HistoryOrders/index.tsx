@@ -8,7 +8,7 @@ import Pagination from "components/Pagination";
 import { useEffect, useState } from "react";
 
 const column = ["#", "Заказчик", "Отдел", "Название товара", "Цена (UZS)", "Статус"];
-const itemsPerPage = 5;
+const itemsPerPage = 20;
 
 const HistoryOrders = () => {
   const navigate = useNavigate();

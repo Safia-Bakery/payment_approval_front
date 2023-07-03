@@ -13,11 +13,11 @@ import Pagination from "components/Pagination";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-const itemsPerPage = 5;
+const itemsPerPage = 20;
 
 const ActiveOrders = () => {
   const navigate = useNavigate();
-  const createOrder = () => navigate("/create-orders");
+  // const createOrder = () => navigate("/create-orders");
   const me = useAppSelector(roleSelector);
   const admin = me?.role !== StatusRoles.purchasing && me?.role !== StatusRoles.superadmin;
   const { mutate } = orderStatusMutation();
@@ -100,9 +100,9 @@ const ActiveOrders = () => {
     <Container>
       <div className="d-flex flex-column">
         <h1>Активные заказы</h1>
-        <button onClick={createOrder} className={`btn btn-info btn-fill mb-4 ${styles.btn}`}>
+        {/* <button onClick={createOrder} className={`btn btn-info btn-fill mb-4 ${styles.btn}`}>
           Создать
-        </button>
+        </button> */}
       </div>
       <div className="content table-responsive table-full-width">
         <table className="table table-hover ">
