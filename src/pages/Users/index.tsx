@@ -3,6 +3,7 @@ import Loading from "components/Loader";
 import useUsers from "hooks/useUsers";
 import { useNavigate } from "react-router-dom";
 import { handleStatus } from "utils/helpers";
+import { StatusRoles } from "utils/types";
 
 const column = ["#", "Логин", "Имя", "Роль", "Действия"];
 
@@ -35,12 +36,14 @@ const Users = () => {
 
                   <td>{handleStatus(user.role)}</td>
                   <td>
-                    <button
-                      onClick={() => navigate(`/users/${user.id}`)}
-                      type="button"
-                      className="btn btn-success">
-                      edit
-                    </button>
+                    {user?.role !== StatusRoles.superadmin && (
+                      <button
+                        onClick={() => navigate(`/users/${user.id}`)}
+                        type="button"
+                        className="btn btn-success">
+                        edit
+                      </button>
+                    )}
                   </td>
                 </tr>
               );

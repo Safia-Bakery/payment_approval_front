@@ -16,32 +16,17 @@ interface Props {
 }
 
 const InputBlock: FC<Props> = ({
-  className,
-  value,
-  onChange,
   inputType = "text",
-  placeholder = "",
-  onFocus,
-  autoFocus,
-  disabled = false,
   label,
   register,
+  placeholder,
   error,
+  ...others
 }) => {
   return (
     <div>
       {label && <label>{label}</label>}
-      <input
-        {...register}
-        disabled={disabled}
-        className={className}
-        type={inputType}
-        value={value}
-        onFocus={onFocus}
-        autoFocus={autoFocus}
-        placeholder={placeholder || ""}
-        onChange={onChange}
-      />
+      <input {...register} placeholder={placeholder || ""} type={inputType} {...others} />
       {error && (
         <div className="alert alert-danger p-2" role="alert">
           {error?.message?.toString()}

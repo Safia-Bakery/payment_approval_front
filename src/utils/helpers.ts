@@ -30,6 +30,8 @@ export const handleStatus = (status: StatusRoles) => {
       return "Директор производства";
     case StatusRoles.begzod:
       return "Директор розницы";
+    case StatusRoles.superadmin:
+      return "Суперадмин";
     case StatusRoles.paid:
       return "Оплачен";
     case StatusRoles.denied:
