@@ -1,5 +1,4 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
-import SideBar from "../SideBar";
 import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import { logoutHandler, roleHandler, tokenSelector } from "redux/reducers/authReducer";
 import CreateOrder from "pages/CreateOrder";
@@ -14,7 +13,9 @@ import useUserRoles from "hooks/useUserRoles";
 import ShowOrder from "pages/ShowOrder";
 import useToken from "hooks/useToken";
 import { StatusRoles } from "utils/types";
-import Home from "pages/Home";
+import CustomSidebar from "../Sidebar";
+import ControlPanel from "pages/ControlPanel";
+import Breadcrumbs from "../BreadCrump";
 
 const Navigation = () => {
   const token = useAppSelector(tokenSelector);
@@ -58,10 +59,14 @@ const Navigation = () => {
 
   return (
     <>
-      {token && <SideBar />}
+      {token && (
+        <>
+          <Breadcrumbs />
+          <CustomSidebar />
+        </>
+      )}
       <Routes>
-        {/* <Route element={<Home />} path="/" /> */}
-        <Route element={<Home />} path="*" />
+        <Route element={<ControlPanel />} path="*" />
         <Route element={<Login />} path="/login" />
         <Route element={<HistoryOrders />} path="/history-orders" />
 

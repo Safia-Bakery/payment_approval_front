@@ -1,8 +1,11 @@
-import { useMemo, useState } from "react";
-import "./index.scss";
-import { useAppDispatch, useAppSelector } from "redux/utils/types";
-import { logoutHandler, roleSelector } from "redux/reducers/authReducer";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
+import styles from "./index.module.scss";
+import { NavLink, useMatch } from "react-router-dom";
+import cl from "classnames";
+import { useMemo } from "react";
 import { StatusRoles } from "utils/types";
+import { useAppSelector } from "redux/utils/types";
+import { roleSelector } from "redux/reducers/authReducer";
 
 const purchasing = [
   {
@@ -53,9 +56,7 @@ const superAdmins = [
   },
 ];
 
-const SideBar = () => {
-  const dispatch = useAppDispatch();
-  const [active, $active] = useState(false);
+const CustomSidebar = () => {
   const me = useAppSelector(roleSelector);
 
   const routeArr = useMemo(() => {
@@ -64,44 +65,61 @@ const SideBar = () => {
     else return approvers;
   }, [me?.role]);
 
-  const handleLogout = () => dispatch(logoutHandler());
-
   return (
-    <>
-      <header className="shadow-sm header">
-        {!active && (
-          <div className="burgerBtn p-3" onClick={() => $active(!active)}>
-            <img src="/assets/icons/burger.svg" alt="burger" />
-          </div>
-        )}
-      </header>
-      <div className="block" />
-      <div className={`sidebar ${active && "active"}`} data-image="../assets/img/sidebar-5.jpg">
-        <div className="sidebar-wrapper">
-          <div
-            onClick={handleLogout}
-            className="d-flex text-center justify-content-end px-3 pt-3 font-weight-bold pointer logoutBlock">
-            Выйти
-            <div className="logout ml-2">
-              <img src="/assets/icons/logout.svg" alt="logout" />
-            </div>
-          </div>
-
-          <ul className="nav mt-2">
-            {routeArr.map(item => (
-              <li key={item.url}>
-                <a className="nav-link" href={item.url}>
-                  <img src={item.icon} alt={item.name} className="sidebarIcon" />
-                  <p>{item.name}</p>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <Sidebar
+      backgroundColor="#9368E9"
+      className={styles.sidebar}
+      rootStyles={{
+        color: "white",
+        height: "100%",
+        position: "fixed",
+        top: 0,
+        zIndex: 100,
+      }}>
+      <div className="w-100 d-flex flex-column">
+        <h3 className="pointer mb-0 pl-2">FIN</h3>
+        <p className={cl("mb-0 pl-2 ", styles.descr)}>
+          <small>Finance management</small>
+        </p>
       </div>
-      {active && <div className="overlay" onClick={() => $active(!active)} />}
-    </>
+      <Menu
+        // background: linear-gradient(to bottom, #9368E9 0%, #943bea 100%);
+        menuItemStyles={{
+          subMenuContent: ({ level }) => ({
+            backgroundColor: level === 0 ? "#9368E9" : "transparent",
+          }),
+        }}>
+        {/* <MenuItem
+          icon={
+            <img
+              alt="control-panel"
+              height={30}
+              width={30}
+              src={"/assets/icons/controlPanel.svg"}
+            />
+          }
+          className={cl(styles.menuItem, {
+            [styles.active]: useMatch("/"),
+          })}
+          component={<NavLink to={"/"} />}>
+          Панель управления
+        </MenuItem> */}
+        {routeArr.map(item => {
+          return (
+            <MenuItem
+              key={item.name + item.url}
+              icon={<img alt={item.name} height={30} width={30} src={item.icon || ""} />}
+              className={cl(styles.menuItem, {
+                [styles.active]: item.url && useMatch(item.url),
+              })}
+              component={<NavLink to={item.url || ""} />}>
+              {item.name}
+            </MenuItem>
+          );
+        })}
+      </Menu>
+    </Sidebar>
   );
 };
 
-export default SideBar;
+export default CustomSidebar;

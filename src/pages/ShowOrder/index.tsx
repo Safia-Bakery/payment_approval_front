@@ -4,7 +4,7 @@ import Loading from "components/Loader";
 import dayjs from "dayjs";
 import { useOrder } from "hooks/userOrder";
 import styles from "./index.module.scss";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const ShowOrder = () => {
   const { id } = useParams();
@@ -60,9 +60,9 @@ const ShowOrder = () => {
         <div className="d-flex flex-column">
           <h2>Картинки</h2>
           <div className={styles.image}>
-            <a href={`${BASE_URL}/${order.image}`} target="_blank" rel="noreferrer">
+            <Link to={`${BASE_URL}/${order.image}`} target="_blank" rel="noreferrer">
               {order.image}
-            </a>
+            </Link>
           </div>
         </div>
       )}
