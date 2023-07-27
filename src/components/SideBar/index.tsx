@@ -83,13 +83,12 @@ const CustomSidebar = () => {
         </p>
       </div>
       <Menu
-        // background: linear-gradient(to bottom, #9368E9 0%, #943bea 100%);
         menuItemStyles={{
           subMenuContent: ({ level }) => ({
             backgroundColor: level === 0 ? "#9368E9" : "transparent",
           }),
         }}>
-        {/* <MenuItem
+        <MenuItem
           icon={
             <img
               alt="control-panel"
@@ -103,7 +102,7 @@ const CustomSidebar = () => {
           })}
           component={<NavLink to={"/"} />}>
           Панель управления
-        </MenuItem> */}
+        </MenuItem>
         {routeArr.map(item => {
           return (
             <MenuItem

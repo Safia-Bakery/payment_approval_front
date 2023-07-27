@@ -47,8 +47,10 @@ export interface Order {
   payer: string;
   time_created: Date;
   payment_type: string;
+  nakladnoy?: string;
   image?: string;
   category: CategoryTypes;
+  amount_paid?: number;
 }
 
 export interface OrderType {
@@ -70,6 +72,7 @@ export interface CreateOrderType {
   description: string;
   image_id?: string;
   payment_type: string;
+  user_id?: string;
 }
 
 export enum StatusRoles {
@@ -83,6 +86,7 @@ export enum StatusRoles {
   superadmin = "superadmin",
   paid = "paid",
   denied = "denied",
+  nakladnoy = "nakladnoy",
 }
 
 export interface MeTypes {
@@ -93,4 +97,12 @@ export interface MeTypes {
 export enum Status {
   accepted = "accepted",
   denied = "denied",
+}
+
+export interface OverheadTypes {
+  id: number;
+  username: string;
+  role: string;
+  success: boolean;
+  full_name: string;
 }

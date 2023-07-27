@@ -15,11 +15,13 @@ import dayjs from "dayjs";
 
 const itemsPerPage = 20;
 
+const roleArr = [StatusRoles.superadmin, StatusRoles.purchasing, StatusRoles.nakladnoy];
+
 const ActiveOrders = () => {
   const navigate = useNavigate();
   // const createOrder = () => navigate("/create-orders");
   const me = useAppSelector(roleSelector);
-  const admin = me?.role !== StatusRoles.purchasing && me?.role !== StatusRoles.superadmin;
+  const admin = !roleArr.includes(me?.role!);
   const { mutate } = orderStatusMutation();
   const [submitting, $submitting] = useState(false);
 

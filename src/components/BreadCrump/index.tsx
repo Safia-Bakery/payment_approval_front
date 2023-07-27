@@ -64,7 +64,7 @@ const Breadcrumbs: FC = () => {
           </ul>
 
           <span onClick={handleLogout} className={styles.logout}>
-            Выйти ({me?.username})
+            Выйти ({me?.role})
           </span>
         </div>
       </Container>
