@@ -13,7 +13,7 @@ import useUserRoles from "hooks/useUserRoles";
 import ShowOrder from "pages/ShowOrder";
 import useToken from "hooks/useToken";
 import { StatusRoles } from "utils/types";
-import CustomSidebar from "../Sidebar";
+import CustomSidebar from "components/MySidebar";
 import ControlPanel from "pages/ControlPanel";
 import Breadcrumbs from "../BreadCrump";
 
