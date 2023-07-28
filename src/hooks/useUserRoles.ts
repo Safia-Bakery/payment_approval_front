@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import HttpClient from "api/requestBase";
 import { RoleList } from "utils/types";
 
-export const useUserRoles = ({ enabled = false }) => {
+export const useUserRoles = ({ enabled = true }) => {
   return useQuery({
     queryKey: ["user_roles"],
     queryFn: () =>

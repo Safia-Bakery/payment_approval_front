@@ -31,7 +31,6 @@ const Navigation = () => {
   }, [token, isError, me?.role, error]);
 
   useCategories({ enabled: !!token });
-  useUserRoles({ enabled: !!token });
 
   const renderRoutes = () => {
     if (me?.role === StatusRoles.purchasing)

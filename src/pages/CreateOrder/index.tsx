@@ -14,6 +14,7 @@ import MainSelect from "components/BaseInputs/MainSelect";
 import MainInput from "components/BaseInputs/MainInput";
 import MainTextArea from "components/BaseInputs/MainTextArea";
 import MainDatePicker from "components/BaseInputs/MainDatePicker";
+import { useNavigate } from "react-router-dom";
 
 const paymentType = [
   { id: "Перечисление", name: "Перечисление" },
@@ -30,7 +31,7 @@ const CreateOrder = () => {
   const { data: dept, isLoading } = useCategories({ enabled: false });
   const { data: overheads } = useOverhead({});
   const [imageId, $imageId] = useState<any>();
-
+  const navigate = useNavigate();
   const [date, $date] = useState<Date>();
   const [imageLoading, $imageLoading] = useState(false);
 
@@ -93,6 +94,7 @@ const CreateOrder = () => {
       },
       {
         onSuccess: () => {
+          navigate("/");
           reset();
           successToast("Заказ успешно создано");
         },

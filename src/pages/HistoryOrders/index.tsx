@@ -12,7 +12,7 @@ const itemsPerPage = 20;
 
 const HistoryOrders = () => {
   const navigate = useNavigate();
-  const handleNavigate = (id: number) => () => navigate(`/order/${id}`);
+  const handleNavigate = (id: number) => () => navigate(`/order/${id}?finished=true`);
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: orders,
@@ -50,7 +50,7 @@ const HistoryOrders = () => {
               ))}
             </tr>
           </thead>
-          {orders?.items.length && (
+          {!!orders?.items?.length && (
             <tbody>
               {orders?.items.map((order, idx) => (
                 <tr className={rowColor(order.status)} key={order.id}>

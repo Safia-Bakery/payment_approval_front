@@ -5,7 +5,7 @@ import { OrderType } from "utils/types";
 export const useOrders = ({
   history = false,
   enabled = true,
-  size = 5,
+  size = 20,
   page = 1,
 }: {
   history?: boolean;

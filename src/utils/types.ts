@@ -52,6 +52,24 @@ export interface Order {
   category: CategoryTypes;
   amount_paid?: number;
 }
+export interface ShowOrder {
+  purchaser: string;
+  seller: string;
+  price: number;
+  status: StatusRoles;
+  urgent: boolean;
+  description: string;
+  id: number;
+  product: string;
+  delivery_time: Date;
+  payer: string;
+  time_created: Date;
+  payment_type: string;
+  nakladnoy?: string;
+  image?: string;
+  category: string;
+  amount_paid?: number;
+}
 
 export interface OrderType {
   items: Order[];

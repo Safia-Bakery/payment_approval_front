@@ -4,7 +4,7 @@ import Loading from "components/Loader";
 import dayjs from "dayjs";
 import { useOrder } from "hooks/userOrder";
 import styles from "./index.module.scss";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import useToken from "hooks/useToken";
 import { StatusRoles } from "utils/types";
 import MainInput from "components/BaseInputs/MainInput";
@@ -12,20 +12,28 @@ import { useForm } from "react-hook-form";
 import payMutation from "hooks/mutation/payMutation";
 import { useEffect } from "react";
 import { successToast } from "utils/toast";
+import useOrders from "hooks/useOrders";
 
 const ShowOrder = () => {
   const { id } = useParams();
-  const { data: order, isLoading } = useOrder({ id: Number(id) });
+  const { data: order, isLoading, refetch: orderRefetch } = useOrder({ id: Number(id) });
   const { data: me } = useToken({});
-
+  const navigate = useNavigate();
   const { mutate } = payMutation();
 
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const finished = searchParams.get("finished");
+
+  const both = me?.role === StatusRoles.nakladnoy || me?.role === StatusRoles.accountant;
+  const acc = me?.role === StatusRoles.accountant;
+
+  const { refetch } = useOrders({ enabled: false });
   const { register, handleSubmit, getValues, reset } = useForm();
 
   useEffect(() => {
-    if (me?.role === StatusRoles.nakladnoy || me?.role === StatusRoles.accountant) {
+    if (both && !finished) {
       reset({
-        amount_paid: order?.amount_paid,
         nakladnoy: order?.nakladnoy,
       });
     }
@@ -42,6 +50,9 @@ const ShowOrder = () => {
       {
         onSuccess: () => {
           successToast("Успешно изменено");
+          refetch();
+          orderRefetch();
+          navigate("/active-orders");
         },
       },
     );
@@ -56,7 +67,7 @@ const ShowOrder = () => {
           <tbody>
             <tr>
               <th>отдел</th>
-              <td>{order?.category?.name}</td>
+              <td>{order?.category}</td>
             </tr>
             <tr>
               <th>заказчик</th>
@@ -92,15 +103,22 @@ const ShowOrder = () => {
               <th>Комментарии</th>
               <td>{order?.description}</td>
             </tr>
-            {me?.role === StatusRoles.accountant && (
+
+            {!!order?.amount_paid && (
               <tr>
                 <th>Оплачен (UZS)</th>
+                <td>{order?.amount_paid}</td>
+              </tr>
+            )}
+            {acc && !finished && (
+              <tr>
+                <th>Оплатить (UZS)</th>
                 <td>
-                  <MainInput placeholder={"Оплачен"} register={register("amount_paid")} />
+                  <MainInput placeholder={"Оплатить"} register={register("amount_paid")} />
                 </td>
               </tr>
             )}
-            {(me?.role === StatusRoles.accountant || me?.role === StatusRoles.nakladnoy) && (
+            {both && !finished && (
               <tr>
                 <th>Накладной номер</th>
                 <td>
@@ -110,7 +128,7 @@ const ShowOrder = () => {
             )}
           </tbody>
         </table>
-        {(me?.role === StatusRoles.nakladnoy || me?.role === StatusRoles.accountant) && (
+        {both && !finished && (
           <button type="submit" className="btn pull-right btn-info btn-fill">
             Сохранить
           </button>

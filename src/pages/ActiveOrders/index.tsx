@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 
 const itemsPerPage = 20;
 
-const roleArr = [StatusRoles.superadmin, StatusRoles.nakladnoy];
+const roleArr = [StatusRoles.superadmin, StatusRoles.nakladnoy, StatusRoles.accountant];
 
 const ActiveOrders = () => {
   const navigate = useNavigate();
@@ -92,8 +92,8 @@ const ActiveOrders = () => {
   ];
 
   useEffect(() => {
-    refetch();
-  }, [currentPage, refetch]);
+    if (currentPage > 1) refetch();
+  }, [currentPage]);
 
   if (orderLoading) return <Loading />;
 
@@ -119,24 +119,24 @@ const ActiveOrders = () => {
             </tr>
           </thead>
 
-          {orders?.items.length && (
+          {!!orders?.items?.length && (
             <tbody>
               {(sortData()?.length ? sortData() : orders?.items)?.map((order, idx) => (
-                <tr className={rowColor(order.status)} key={order.id}>
+                <tr className={rowColor(order?.status)} key={order.id}>
                   <td className={styles.num}> {handleIdx(idx)}</td>
-                  <td>{order.purchaser}</td>
-                  <td>{order?.category.name}</td>
+                  <td>{order?.purchaser}</td>
+                  <td>{order?.category?.name}</td>
                   <td>{order.product}</td>
-                  <td>{numberWithCommas(order.price)}</td>
-                  <td>{dayjs(order.time_created).format("DD-MMM-YYYY HH:mm")}</td>
-                  <td>{handleStatus(order.status)}</td>
+                  <td>{numberWithCommas(order?.price)}</td>
+                  <td>{dayjs(order?.time_created).format("DD-MMM-YYYY HH:mm")}</td>
+                  <td>{handleStatus(order?.status)}</td>
                   {admin ? (
                     <>
                       <td className="d-flex gap-2 align-items-center">
                         <button
                           disabled={submitting}
                           onClick={handleStatusSubmit({
-                            order_id: order.id,
+                            order_id: order?.id,
                             status: Status.accepted,
                           })}
                           type="button"
@@ -146,7 +146,7 @@ const ActiveOrders = () => {
                         <button
                           disabled={submitting}
                           onClick={handleStatusSubmit({
-                            order_id: order.id,
+                            order_id: order?.id,
                             status: Status.denied,
                           })}
                           type="button"
