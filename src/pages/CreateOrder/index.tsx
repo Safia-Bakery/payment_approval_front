@@ -8,7 +8,6 @@ import axios from "axios";
 import Loading from "components/Loader";
 import { errorToast, successToast } from "utils/toast";
 import { BASE_URL } from "api/apiClient";
-import dayjs from "dayjs";
 import useOverhead from "hooks/useOverhead";
 import BaseInput from "components/BaseInputs";
 import MainSelect from "components/BaseInputs/MainSelect";
@@ -36,20 +35,6 @@ const CreateOrder = () => {
   const [imageLoading, $imageLoading] = useState(false);
 
   const { mutate: mutateOrder } = createOrderMutation();
-
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
-
-  const handleDateChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(event.target.value);
-  };
-
-  const handleTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSelectedTime(event.target.value);
-  };
-  // useEffect(() => {
-  //   if (dept?.length) $department(dept[0].id);
-  // }, [dept]);
 
   const {
     register,

@@ -2,11 +2,10 @@ import { useForm } from "react-hook-form";
 import styles from "./index.module.scss";
 import cl from "classnames";
 import loginMutation from "hooks/mutation/loginMutation";
-import { useAppDispatch, useAppSelector } from "redux/utils/types";
+import { useAppDispatch } from "redux/utils/types";
 import axios from "axios";
-import { loginHandler, tokenSelector } from "redux/reducers/authReducer";
+import { loginHandler } from "redux/reducers/authReducer";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import useToken from "hooks/useToken";
 import { errorToast, successToast } from "utils/toast";
 import InputMask from "react-input-mask";
@@ -15,7 +14,6 @@ import { fixedString } from "utils/helpers";
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const token = useAppSelector(tokenSelector);
   const { refetch } = useToken({});
 
   const {
@@ -26,10 +24,6 @@ const Login = () => {
   } = useForm();
 
   const { mutate } = loginMutation();
-
-  useEffect(() => {
-    if (token) navigate("/history-orders");
-  }, [navigate, token]);
 
   const onSubmit = () => {
     const { username, password } = getValues();
@@ -42,7 +36,7 @@ const Login = () => {
           axios.defaults.headers["Authorization"] = `Bearer ${token}`;
           dispatch(loginHandler(data.access_token));
           refetch();
-          navigate("/history-orders");
+          navigate("/");
           successToast("Добро пожаловать");
         },
         onError: (error: any) => errorToast(error.toString()),

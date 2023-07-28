@@ -20,6 +20,14 @@ const purchasing = [
   },
 ];
 
+const overhead = [
+  {
+    name: "История Заказов",
+    url: "/history-orders",
+    icon: "/assets/icons/historyOrder.svg",
+  },
+];
+
 const approvers = [
   {
     name: "Активные Заказы",
@@ -62,6 +70,7 @@ const CustomSidebar = () => {
   const routeArr = useMemo(() => {
     if (me?.role === StatusRoles.purchasing) return purchasing;
     if (me?.role === StatusRoles.superadmin) return superAdmins;
+    if (me?.role === StatusRoles.nakladnoy) return overhead;
     else return approvers;
   }, [me?.role]);
 

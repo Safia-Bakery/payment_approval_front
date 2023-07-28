@@ -5,7 +5,7 @@ import CreateOrder from "pages/CreateOrder";
 import Login from "pages/Login";
 import ActiveOrders from "pages/ActiveOrders";
 import HistoryOrders from "pages/HistoryOrders";
-import { useLayoutEffect, useMemo } from "react";
+import { useLayoutEffect } from "react";
 import useCategories from "hooks/useCategories";
 import Users from "pages/Users";
 import EditUser from "pages/EditUser";
@@ -28,12 +28,12 @@ const Navigation = () => {
     if (!token) navigate("/login");
     if (isError || error) dispatch(logoutHandler());
     if (me?.role) dispatch(roleHandler(me));
-  }, [token, isError, me, error, navigate, dispatch]);
+  }, [token, isError, me?.role, error]);
 
   useCategories({ enabled: !!token });
   useUserRoles({ enabled: !!token });
 
-  const renderRoutes = useMemo(() => {
+  const renderRoutes = () => {
     if (me?.role === StatusRoles.purchasing)
       return <Route element={<CreateOrder />} path="/create-order" />;
 
@@ -55,7 +55,7 @@ const Navigation = () => {
         </>
       );
     }
-  }, [me?.role]);
+  };
 
   return (
     <>
@@ -66,11 +66,13 @@ const Navigation = () => {
         </>
       )}
       <Routes>
-        <Route element={<ControlPanel />} path="*" />
+        <Route element={<ControlPanel />} path="/" />
         <Route element={<Login />} path="/login" />
-        <Route element={<HistoryOrders />} path="/history-orders" />
+        {me?.role !== StatusRoles.nakladnoy && (
+          <Route element={<HistoryOrders />} path="/history-orders" />
+        )}
 
-        {renderRoutes}
+        {renderRoutes()}
       </Routes>
     </>
   );

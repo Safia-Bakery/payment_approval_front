@@ -11,12 +11,12 @@ interface Breadcrumb {
 }
 
 const routeNameMappings: { [key: string]: string } = {
-  "create-order": "create",
-  "active-orders": "active",
+  "create-order": "создать заказ",
+  "active-orders": "активные заказы",
   home: "Главная",
   order: "Заявка",
   map: "Карта",
-  "history-orders": "history",
+  "history-orders": "история заказов",
   add: "Добавить",
   edit: "Изменить",
 };
@@ -25,10 +25,8 @@ const Breadcrumbs: FC = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const dispatch = useAppDispatch();
-  const handleLogout = () => {
-    dispatch(logoutHandler());
-    window.location.reload();
-  };
+  const handleLogout = () => dispatch(logoutHandler());
+
   const me = useAppSelector(roleSelector);
 
   const breadcrumbs: Breadcrumb[] = [];
