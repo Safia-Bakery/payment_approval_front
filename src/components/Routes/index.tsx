@@ -59,7 +59,7 @@ const Navigation = () => {
 
   return (
     <>
-      {token && (
+      {!!token && !!me && (
         <>
           <Breadcrumbs />
           <CustomSidebar />

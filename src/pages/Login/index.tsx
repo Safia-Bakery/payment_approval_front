@@ -2,19 +2,21 @@ import { useForm } from "react-hook-form";
 import styles from "./index.module.scss";
 import cl from "classnames";
 import loginMutation from "hooks/mutation/loginMutation";
-import { useAppDispatch } from "redux/utils/types";
+import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import axios from "axios";
-import { loginHandler } from "redux/reducers/authReducer";
+import { loginHandler, tokenSelector } from "redux/reducers/authReducer";
 import { useNavigate } from "react-router-dom";
 import useToken from "hooks/useToken";
 import { errorToast, successToast } from "utils/toast";
 import InputMask from "react-input-mask";
 import { fixedString } from "utils/helpers";
+import { useEffect } from "react";
 
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { refetch } = useToken({});
+  const token = useAppSelector(tokenSelector);
 
   const {
     register,
@@ -22,6 +24,10 @@ const Login = () => {
     formState: { errors },
     getValues,
   } = useForm();
+
+  useEffect(() => {
+    if (token) navigate("/");
+  }, [token]);
 
   const { mutate } = loginMutation();
 

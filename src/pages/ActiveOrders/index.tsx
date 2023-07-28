@@ -15,11 +15,10 @@ import dayjs from "dayjs";
 
 const itemsPerPage = 20;
 
-const roleArr = [StatusRoles.superadmin, StatusRoles.purchasing, StatusRoles.nakladnoy];
+const roleArr = [StatusRoles.superadmin, StatusRoles.nakladnoy];
 
 const ActiveOrders = () => {
   const navigate = useNavigate();
-  // const createOrder = () => navigate("/create-orders");
   const me = useAppSelector(roleSelector);
   const admin = !roleArr.includes(me?.role!);
   const { mutate } = orderStatusMutation();
@@ -102,9 +101,6 @@ const ActiveOrders = () => {
     <Container>
       <div className="d-flex flex-column">
         <h1>Активные заказы</h1>
-        {/* <button onClick={createOrder} className={`btn btn-info btn-fill mb-4 ${styles.btn}`}>
-          Создать
-        </button> */}
       </div>
       <div className="content table-responsive table-full-width">
         <table className="table table-hover ">

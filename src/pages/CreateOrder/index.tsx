@@ -192,7 +192,7 @@ const CreateOrder = () => {
             )}
           </div>
 
-          <BaseInput className="col-md-6 " label="Выберите сотрудника для накладного ноомера">
+          <BaseInput className="col-md-6 " label="Выберите сотрудника для накладного номера">
             <MainSelect register={register("overhead")}>
               <option value={undefined}></option>
               {overheads?.map(person => (

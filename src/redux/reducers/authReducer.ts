@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../rootConfig";
+import { RootState, persistor } from "../rootConfig";
 import { StatusRoles } from "utils/types";
 
 interface State {
@@ -17,8 +17,9 @@ export const authReducer = createSlice({
   initialState,
   reducers: {
     logoutHandler: state => {
-      state.token = "";
+      state.token = undefined;
       state.me = undefined;
+      localStorage.removeItem("auth");
     },
 
     loginHandler: (state, { payload }) => {

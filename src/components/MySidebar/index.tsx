@@ -2,7 +2,6 @@ import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import styles from "./index.module.scss";
 import { NavLink, useMatch } from "react-router-dom";
 import cl from "classnames";
-import { useMemo } from "react";
 import { StatusRoles } from "utils/types";
 import { useAppSelector } from "redux/utils/types";
 import { roleSelector } from "redux/reducers/authReducer";
@@ -67,12 +66,19 @@ const superAdmins = [
 const CustomSidebar = () => {
   const me = useAppSelector(roleSelector);
 
-  const routeArr = useMemo(() => {
-    if (me?.role === StatusRoles.purchasing) return purchasing;
-    if (me?.role === StatusRoles.superadmin) return superAdmins;
-    if (me?.role === StatusRoles.nakladnoy) return overhead;
-    else return approvers;
-  }, [me?.role]);
+  const routeArr = () => {
+    switch (me?.role) {
+      case StatusRoles.purchasing:
+        return purchasing;
+      case StatusRoles.superadmin:
+        return superAdmins;
+      case StatusRoles.nakladnoy:
+        return overhead;
+
+      default:
+        return approvers;
+    }
+  };
 
   return (
     <Sidebar
@@ -107,24 +113,25 @@ const CustomSidebar = () => {
             />
           }
           className={cl(styles.menuItem, {
-            [styles.active]: useMatch("/"),
+            [styles.active]: !!me && useMatch("/"),
           })}
           component={<NavLink to={"/"} />}>
           Панель управления
         </MenuItem>
-        {routeArr.map(item => {
-          return (
-            <MenuItem
-              key={item.name + item.url}
-              icon={<img alt={item.name} height={30} width={30} src={item.icon || ""} />}
-              className={cl(styles.menuItem, {
-                [styles.active]: item.url && useMatch(item.url),
-              })}
-              component={<NavLink to={item.url || ""} />}>
-              {item.name}
-            </MenuItem>
-          );
-        })}
+        {routeArr()?.length &&
+          routeArr()?.map(item => {
+            return (
+              <MenuItem
+                key={item.name + item.url}
+                icon={<img alt={item.name} height={30} width={30} src={item.icon || ""} />}
+                className={cl(styles.menuItem, {
+                  [styles.active]: item.url && useMatch(item.url),
+                })}
+                component={<NavLink to={item.url || ""} />}>
+                {item.name}
+              </MenuItem>
+            );
+          })}
       </Menu>
     </Sidebar>
   );
