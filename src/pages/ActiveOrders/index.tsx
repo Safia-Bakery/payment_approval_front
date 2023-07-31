@@ -123,7 +123,7 @@ const ActiveOrders = () => {
             <tbody>
               {(sortData()?.length ? sortData() : orders?.items)?.map((order, idx) => (
                 <tr className={rowColor(order?.status)} key={order.id}>
-                  <td className={styles.num}> {handleIdx(idx)}</td>
+                  <td className={styles.num}>{handleIdx(idx)}</td>
                   <td>{order?.purchaser}</td>
                   <td>{order?.category?.name}</td>
                   <td>{order.product}</td>

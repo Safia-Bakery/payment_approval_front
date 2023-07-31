@@ -4,6 +4,13 @@
   margin: 0;
   line-height: 60px;
   list-style: none;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 991px) {
+    padding: 0;
+    width: 60%;
+  }
 
   li + li:before {
     padding: 0 5px;
@@ -34,8 +41,11 @@
   outline: none !important;
   align-items: center;
   padding: 0 20px;
-
   color: #9a9a9a !important;
+
+  @media (max-width: 991px) {
+    padding: 0 10px;
+  }
 
   a {
     text-decoration: none !important;
@@ -48,4 +58,23 @@
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   cursor: pointer;
+
+  @media (max-width: 991px) {
+    max-width: 100px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 991px) {
+  .titles {
+    display: flex;
+    line-height: 22px;
+    flex-wrap: wrap;
+  }
+}
+.btn {
+  width: 40px;
+  height: 40px;
+  background-color: #9368e9 !important;
 }

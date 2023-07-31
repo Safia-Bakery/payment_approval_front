@@ -7,7 +7,7 @@ import { handleStatus, numberWithCommas, rowColor } from "utils/helpers";
 import Pagination from "components/Pagination";
 import { useEffect, useState } from "react";
 
-const column = ["#", "Заказчик", "Отдел", "Название товара", "Цена (UZS)", "Статус"];
+const column = ["#", "Заказчик", "Отдел", "Название товара", "Цена (UZS)", "Статус", ""];
 const itemsPerPage = 20;
 
 const HistoryOrders = () => {

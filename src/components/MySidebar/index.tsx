@@ -1,10 +1,12 @@
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import styles from "./index.module.scss";
-import { NavLink, useMatch } from "react-router-dom";
+import { NavLink, useLocation, useMatch } from "react-router-dom";
 import cl from "classnames";
 import { StatusRoles } from "utils/types";
-import { useAppSelector } from "redux/utils/types";
+import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import { roleSelector } from "redux/reducers/authReducer";
+import { sidebarHandler, toggleSidebar } from "redux/reducers/toggleReducer";
+import { useEffect } from "react";
 
 const purchasing = [
   {
@@ -65,9 +67,18 @@ const superAdmins = [
 
 const CustomSidebar = () => {
   const me = useAppSelector(roleSelector);
+  const collapsed = useAppSelector(toggleSidebar);
+  const dispatch = useAppDispatch();
+
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (window.innerWidth < 991) dispatch(sidebarHandler(false));
+  }, [pathname]);
+
+  const handleOverlay = () => dispatch(sidebarHandler(!collapsed));
 
   const routeArr = () => {
-    if (!me) return;
     switch (me?.role) {
       case StatusRoles.purchasing:
         return purchasing;
@@ -83,12 +94,10 @@ const CustomSidebar = () => {
 
   const matchUrl = (route: string) => useMatch(route);
 
-  if (!me) return null;
-
   return (
     <Sidebar
       backgroundColor="#9368E9"
-      className={styles.sidebar}
+      className={cl(styles.sidebar, { [styles.collapsed]: collapsed })}
       rootStyles={{
         color: "white",
         height: "100%",
@@ -108,6 +117,7 @@ const CustomSidebar = () => {
             backgroundColor: level === 0 ? "#9368E9" : "transparent",
           }),
         }}>
+        {collapsed && <div className={styles.overlay} onClick={handleOverlay} />}
         <MenuItem
           icon={
             <img
@@ -117,10 +127,11 @@ const CustomSidebar = () => {
               src={"/assets/icons/controlPanel.svg"}
             />
           }
+          onClick={() => console.log("first")}
           className={cl(styles.menuItem, {
-            [styles.active]: !!me && matchUrl("/"),
+            [styles.active]: matchUrl("/"),
           })}
-          component={<NavLink to={"/"} />}>
+          component={<NavLink to={"/"} onClick={handleOverlay} />}>
           Панель управления
         </MenuItem>
         {!!routeArr()?.length &&
@@ -133,6 +144,7 @@ const CustomSidebar = () => {
                 className={cl(styles.menuItem, {
                   [styles.active]: isActive,
                 })}
+                onClick={() => dispatch(sidebarHandler(false))}
                 component={<NavLink to={item.url || ""} />}>
                 {item.name}
               </MenuItem>

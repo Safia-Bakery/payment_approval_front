@@ -39,12 +39,10 @@ const ShowOrder = () => {
   const { register, handleSubmit, getValues, reset } = useForm();
 
   useEffect(() => {
-    if (both) {
-      reset({
-        nakladnoy: order?.nakladnoy,
-      });
-    }
-  }, [me?.role, order?.amount_paid, order?.nakladnoy]);
+    reset({
+      nakladnoy: order?.nakladnoy,
+    });
+  }, [order?.nakladnoy]);
 
   const onSubmit = () => {
     const { amount_paid, nakladnoy } = getValues();

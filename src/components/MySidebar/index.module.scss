@@ -5,9 +5,18 @@
     width: 250px !important;
     min-width: 250px !important;
 
+    @media (max-width: 991px) {
+      width: 0 !important;
+      min-width: 0 !important;
+    }
     .descr {
       opacity: 1;
     }
+  }
+
+  @media (max-width: 991px) {
+    width: 0 !important;
+    min-width: 0 !important;
   }
 }
 
@@ -16,6 +25,7 @@
 }
 .menuItem {
   color: white !important;
+  z-index: 100 !important;
   a {
     padding-left: 20px !important;
   }
@@ -29,4 +39,21 @@
   opacity: 0;
   transition: 0.2s;
   width: 250px;
+}
+
+.overlay {
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.collapsed {
+  width: 250px !important;
+  min-width: 250px !important;
+
+  .descr {
+    opacity: 1;
+  }
 }
