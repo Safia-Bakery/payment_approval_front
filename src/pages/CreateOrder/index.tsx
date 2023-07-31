@@ -15,6 +15,7 @@ import MainInput from "components/BaseInputs/MainInput";
 import MainTextArea from "components/BaseInputs/MainTextArea";
 import MainDatePicker from "components/BaseInputs/MainDatePicker";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 const paymentType = [
   { id: "Перечисление", name: "Перечисление" },
@@ -170,7 +171,11 @@ const CreateOrder = () => {
           </BaseInput>
 
           <BaseInput label="Срок" className="col-md-6 d-flex flex-column">
-            <MainDatePicker selected={date} onChange={handleDate} />
+            <MainDatePicker
+              selected={date}
+              onChange={handleDate}
+              minDate={dayjs(new Date()).toDate()}
+            />
             <div className={styles.urgent}>
               <label>Срочно</label>
               <input {...register("urgent")} className="ml-2" type="checkbox" name="urgent" />
@@ -194,8 +199,11 @@ const CreateOrder = () => {
             )}
           </div>
 
-          <BaseInput className="col-md-6 " label="Выберите сотрудника для накладного номера">
-            <MainSelect register={register("overhead")}>
+          <BaseInput
+            className="col-md-6 "
+            error={errors.overhead}
+            label="Выберите сотрудника для накладного номера">
+            <MainSelect register={register("overhead", { required: "Обязательное поле" })}>
               <option value={undefined}></option>
               {overheads?.map(person => (
                 <option key={person.id} value={person.id}>

@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { RootState, persistor } from "../rootConfig";
+import { RootState } from "../rootConfig";
 import { StatusRoles } from "utils/types";
 
 interface State {
   token?: string;
-  me?: { id: number; username: string; role: StatusRoles };
+  me?: { id?: number; username?: string; role?: StatusRoles };
 }
 
 const initialState: State = {
@@ -17,9 +17,14 @@ export const authReducer = createSlice({
   initialState,
   reducers: {
     logoutHandler: state => {
-      state.token = undefined;
-      state.me = undefined;
-      localStorage.removeItem("auth");
+      localStorage.clear();
+      window.location.reload();
+      // state.me = {};
+      // state.token = undefined;
+      // localStorage.removeItem("safia_finance");
+      // state.me.username = "";
+      // state.me.role = undefined;
+      // state.me.id = undefined;
     },
 
     loginHandler: (state, { payload }) => {

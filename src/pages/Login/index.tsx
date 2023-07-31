@@ -4,7 +4,7 @@ import cl from "classnames";
 import loginMutation from "hooks/mutation/loginMutation";
 import { useAppDispatch, useAppSelector } from "redux/utils/types";
 import axios from "axios";
-import { loginHandler, tokenSelector } from "redux/reducers/authReducer";
+import { loginHandler, roleSelector, tokenSelector } from "redux/reducers/authReducer";
 import { useNavigate } from "react-router-dom";
 import useToken from "hooks/useToken";
 import { errorToast, successToast } from "utils/toast";
@@ -17,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { refetch } = useToken({});
   const token = useAppSelector(tokenSelector);
+  const me = useAppSelector(roleSelector);
 
   const {
     register,
@@ -26,8 +27,8 @@ const Login = () => {
   } = useForm();
 
   useEffect(() => {
-    if (token) navigate("/");
-  }, [token]);
+    if (token && !!me) navigate("/");
+  }, [token, me]);
 
   const { mutate } = loginMutation();
 

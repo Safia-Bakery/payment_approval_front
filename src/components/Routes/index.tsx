@@ -1,6 +1,11 @@
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "redux/utils/types";
-import { logoutHandler, roleHandler, tokenSelector } from "redux/reducers/authReducer";
+import {
+  logoutHandler,
+  roleHandler,
+  roleSelector,
+  tokenSelector,
+} from "redux/reducers/authReducer";
 import CreateOrder from "pages/CreateOrder";
 import Login from "pages/Login";
 import ActiveOrders from "pages/ActiveOrders";
@@ -9,7 +14,6 @@ import { useLayoutEffect } from "react";
 import useCategories from "hooks/useCategories";
 import Users from "pages/Users";
 import EditUser from "pages/EditUser";
-import useUserRoles from "hooks/useUserRoles";
 import ShowOrder from "pages/ShowOrder";
 import useToken from "hooks/useToken";
 import { StatusRoles } from "utils/types";
@@ -23,12 +27,13 @@ const Navigation = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { data: me, isError, error } = useToken({ enabled: !!token });
+  const meLocal = useAppSelector(roleSelector);
 
   useLayoutEffect(() => {
     if (!token) navigate("/login");
     if (isError || error) dispatch(logoutHandler());
-    if (me?.role) dispatch(roleHandler(me));
-  }, [token, isError, me?.role, error]);
+    if (me) dispatch(roleHandler(me));
+  }, [token, isError, me, error]);
 
   useCategories({ enabled: !!token });
 
@@ -46,19 +51,18 @@ const Navigation = () => {
           <Route element={<ShowOrder />} path="/order/:id" />
         </>
       );
-    } else {
-      return (
-        <>
-          <Route element={<ActiveOrders />} path="/active-orders" />
-          <Route element={<ShowOrder />} path="/order/:id" />
-        </>
-      );
     }
+    return (
+      <>
+        <Route element={<ActiveOrders />} path="/active-orders" />
+        <Route element={<ShowOrder />} path="/order/:id" />
+      </>
+    );
   };
 
   return (
     <>
-      {!!token && !!me && (
+      {!!token && !!meLocal && (
         <>
           <Breadcrumbs />
           <CustomSidebar />

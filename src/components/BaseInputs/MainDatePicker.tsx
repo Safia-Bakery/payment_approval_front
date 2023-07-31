@@ -10,9 +10,20 @@ interface Props {
   disabled?: boolean;
   register?: Object;
   selected?: Date | null | undefined;
+  minDate?: Date | null;
+  maxDate?: Date | null;
+  maxTime?: Date;
+  minTime?: Date;
 }
 
-const MainDatePicker: FC<Props> = ({ className, selected, register, onChange }) => {
+const MainDatePicker: FC<Props> = ({
+  className,
+  selected,
+  register,
+  onChange,
+  minTime,
+  ...others
+}) => {
   return (
     <DatePicker
       onChange={onChange}
@@ -20,10 +31,12 @@ const MainDatePicker: FC<Props> = ({ className, selected, register, onChange }) 
       timeFormat="p"
       dateFormat="Pp"
       showTimeSelect
+      minTime={minTime}
       timeIntervals={10}
       wrapperClassName="form-group"
       className={cl("form-control", className)}
       {...register}
+      {...others}
     />
   );
 };

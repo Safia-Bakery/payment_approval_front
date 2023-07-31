@@ -10,9 +10,10 @@ import { StatusRoles } from "utils/types";
 import MainInput from "components/BaseInputs/MainInput";
 import { useForm } from "react-hook-form";
 import payMutation from "hooks/mutation/payMutation";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { successToast } from "utils/toast";
 import useOrders from "hooks/useOrders";
+import { numberWithCommas } from "utils/helpers";
 
 const ShowOrder = () => {
   const { id } = useParams();
@@ -24,15 +25,21 @@ const ShowOrder = () => {
   const { search } = useLocation();
   const searchParams = new URLSearchParams(search);
   const finished = searchParams.get("finished");
+  const both =
+    (me?.role === StatusRoles.nakladnoy || me?.role === StatusRoles.accountant) && !finished;
+  const acc = me?.role === StatusRoles.accountant && !finished;
+  const statusPaid = order?.status === StatusRoles.paid;
 
-  const both = me?.role === StatusRoles.nakladnoy || me?.role === StatusRoles.accountant;
-  const acc = me?.role === StatusRoles.accountant;
+  const isPaid = useCallback(() => {
+    if (order?.amount_paid && order?.price) return order?.amount_paid >= order?.price;
+    return false;
+  }, [order?.amount_paid, order?.price]);
 
   const { refetch } = useOrders({ enabled: false });
   const { register, handleSubmit, getValues, reset } = useForm();
 
   useEffect(() => {
-    if (both && !finished) {
+    if (both) {
       reset({
         nakladnoy: order?.nakladnoy,
       });
@@ -79,7 +86,7 @@ const ShowOrder = () => {
             </tr>
             <tr>
               <th>Цена (UZS)</th>
-              <td>{order?.price}</td>
+              <td>{numberWithCommas(order?.price || 0)}</td>
             </tr>
             <tr>
               <th>тип оплаты</th>
@@ -107,10 +114,10 @@ const ShowOrder = () => {
             {!!order?.amount_paid && (
               <tr>
                 <th>Оплачен (UZS)</th>
-                <td>{order?.amount_paid}</td>
+                <td>{numberWithCommas(order?.amount_paid)}</td>
               </tr>
             )}
-            {acc && !finished && (
+            {acc && !isPaid() && (
               <tr>
                 <th>Оплатить (UZS)</th>
                 <td>
@@ -118,17 +125,21 @@ const ShowOrder = () => {
                 </td>
               </tr>
             )}
-            {both && !finished && (
+            {
               <tr>
                 <th>Накладной номер</th>
                 <td>
-                  <MainInput placeholder={"Накладной номер"} register={register("nakladnoy")} />
+                  <MainInput
+                    disabled={!!order?.nakladnoy || !both}
+                    placeholder={"Накладной номер"}
+                    register={register("nakladnoy")}
+                  />
                 </td>
               </tr>
-            )}
+            }
           </tbody>
         </table>
-        {both && !finished && (
+        {both && (!statusPaid || !order?.nakladnoy) && (
           <button type="submit" className="btn pull-right btn-info btn-fill">
             Сохранить
           </button>

@@ -21,9 +21,9 @@ const purchasing = [
 
 const overhead = [
   {
-    name: "История Заказов",
-    url: "/history-orders",
-    icon: "/assets/icons/historyOrder.svg",
+    name: "Активные Заказы",
+    url: "/active-orders",
+    icon: "/assets/icons/activeOrder.svg",
   },
 ];
 
@@ -67,6 +67,7 @@ const CustomSidebar = () => {
   const me = useAppSelector(roleSelector);
 
   const routeArr = () => {
+    if (!me) return;
     switch (me?.role) {
       case StatusRoles.purchasing:
         return purchasing;
@@ -79,6 +80,10 @@ const CustomSidebar = () => {
         return approvers;
     }
   };
+
+  const matchUrl = (route: string) => useMatch(route);
+
+  if (!me) return null;
 
   return (
     <Sidebar
@@ -113,19 +118,20 @@ const CustomSidebar = () => {
             />
           }
           className={cl(styles.menuItem, {
-            [styles.active]: !!me && useMatch("/"),
+            [styles.active]: !!me && matchUrl("/"),
           })}
           component={<NavLink to={"/"} />}>
           Панель управления
         </MenuItem>
-        {routeArr()?.length &&
+        {!!routeArr()?.length &&
           routeArr()?.map(item => {
+            const isActive = !!item.url && !!useMatch(item.url);
             return (
               <MenuItem
                 key={item.name + item.url}
                 icon={<img alt={item.name} height={30} width={30} src={item.icon || ""} />}
                 className={cl(styles.menuItem, {
-                  [styles.active]: item.url && useMatch(item.url),
+                  [styles.active]: isActive,
                 })}
                 component={<NavLink to={item.url || ""} />}>
                 {item.name}
