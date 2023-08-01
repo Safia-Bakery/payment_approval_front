@@ -127,7 +127,6 @@ const CustomSidebar = () => {
               src={"/assets/icons/controlPanel.svg"}
             />
           }
-          onClick={() => console.log("first")}
           className={cl(styles.menuItem, {
             [styles.active]: matchUrl("/"),
           })}

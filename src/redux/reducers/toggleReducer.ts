@@ -14,7 +14,6 @@ export const toggleReducer = createSlice({
   initialState,
   reducers: {
     sidebarHandler: (state, { payload }: PayloadAction<boolean>) => {
-      console.log("first");
       state.sidebarToggler = payload;
     },
   },
