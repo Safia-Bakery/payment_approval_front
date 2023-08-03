@@ -127,10 +127,11 @@ const CustomSidebar = () => {
               src={"/assets/icons/controlPanel.svg"}
             />
           }
+          onClick={() => dispatch(sidebarHandler(false))}
           className={cl(styles.menuItem, {
             [styles.active]: matchUrl("/"),
           })}
-          component={<NavLink to={"/"} onClick={handleOverlay} />}>
+          component={<NavLink to={"/"} />}>
           Панель управления
         </MenuItem>
         {!!routeArr()?.length &&
